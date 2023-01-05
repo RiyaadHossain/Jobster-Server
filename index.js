@@ -18,8 +18,8 @@ const client = new MongoClient(uri, {
 
 const run = async () => {
   try {
-    const db = client.db("jobbox");
-    const userCollection = db.collection("jobUsers");
+    const db = client.db("Elite-Recruit");
+    const userCollection = db.collection("users");
     const jobCollection = db.collection("jobs");
 
     app.post("/user", async (req, res) => {
