@@ -1,4 +1,4 @@
-![alt text](/screenshots/Home-Page.png)
+![Project Photo](https://raw.githubusercontent.com/RiyaadHossain/Elite-Recruiting/main/screenshots/Home-Page.png)
 
 # Elite Recuiting 🧑‍💼
 <p>Elite Recruiting - a job hiring website. In this site, recruiter can post their jobs attaching all the details about the job. Moreover, a candidate can find their desired job based on their preference</p>
