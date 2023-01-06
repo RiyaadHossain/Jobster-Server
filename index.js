@@ -91,8 +91,6 @@ const run = async () => {
     app.patch("/reply", async (req, res) => {
       const userId = req.body.userId;
       const reply = req.body.reply;
-      console.log(reply);
-      console.log(userId);
 
       const filter = { "queries.id": ObjectId(userId) };
 
@@ -117,9 +115,10 @@ const run = async () => {
       res.send({ status: false });
     });
 
-    app.get("/applied-jobs/:email", async (req, res) => {
+    app.get("/applied-jobs/:email/job/:jobId", async (req, res) => {
       const email = req.params.email;
-      const query = { applicants: { $elemMatch: { email: email } } };
+      const jobId = req.params.jobId
+      const query = { _id: ObjectId(jobId), applicants: { $elemMatch: { email: email } } };
       const cursor = jobCollection.find(query).project({ applicants: 0 });
       const result = await cursor.toArray();
 
