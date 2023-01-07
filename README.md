@@ -7,7 +7,6 @@ Live Site: https://elite-recruiting.netlify.app/
 </br>
 Client Code: https://github.com/RiyaadHossain/Elite-Recruiting
 </br>
-Medium Blog: 
 
 ### Features
 - Developed User Authentication using Firebase
@@ -32,4 +31,5 @@ Medium Blog:
 - Express.js
 - MongoDB
 - React Hook Form
+- React Hot Toast
 - Firebase Authentication
