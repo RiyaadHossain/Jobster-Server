@@ -115,6 +115,15 @@ const run = async () => {
       res.send({ status: false });
     });
 
+    app.get("/applied-jobs/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { applicants: { $elemMatch: { email } } };
+      const cursor = jobCollection.find(query);
+      const result = await cursor.toArray();
+
+      res.send({ status: true, data: result });
+    });
+
     app.get("/applied-jobs/:email/job/:jobId", async (req, res) => {
       const email = req.params.email;
       const jobId = req.params.jobId
@@ -133,7 +142,7 @@ const run = async () => {
 
     app.get("/employee-jobs/:email", async (req, res) => {
       const { email } = req.params
-      const cursor = jobCollection.find({ 'postedBy.email': email }); 
+      const cursor = jobCollection.find({ 'postedBy.email': email });
       const result = await cursor.toArray();
       res.send({ status: true, data: result });
     });
