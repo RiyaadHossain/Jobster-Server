@@ -9,6 +9,8 @@ require("dotenv").config();
 app.use(cors());
 app.use(express.json());
 
+// Utils
+require('./utils/utilites')
 
 // Routes
 const userRoute = require('./routes/userRoute')
