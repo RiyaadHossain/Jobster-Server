@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/home/riyad/Documents/Projects/Jobster/Backend/logs/winston/errors/.67fd19c78787c32dc29c1c1b9032a2a476673027-audit.json",
+    "files": [
+        {
+            "date": 1703928896865,
+            "name": "/home/riyad/Documents/Projects/Jobster/Backend/logs/winston/errors/phu-2023-30-12-15-error.log",
+            "hash": "d5385ec312e9e81901d509bc5b3d56f45b2d9d4e0612cc0cdc0d34063da7ee15"
+        },
+        {
+            "date": 1703934555805,
+            "name": "/home/riyad/Documents/Projects/Jobster/Backend/logs/winston/errors/phu-2023-30-12-17-error.log",
+            "hash": "ac64dc9aeb13c264bb706a0b82beaa12eef5e680d023bc17ba8694c2dbea9efd"
+        }
+    ],
+    "hashType": "sha256"
+}
