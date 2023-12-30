@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/home/riyad/Documents/Projects/Jobster/New-Backend/logs/winston/errors/.a625ca2eb3247cab8741b7bfaa2431da394ce2e4-audit.json",
+    "files": [
+        {
+            "date": 1703905792266,
+            "name": "/home/riyad/Documents/Projects/Jobster/New-Backend/logs/winston/errors/phu-2023-30-12-09-error.log",
+            "hash": "21c26036462e9cba94c5940a197ba2995e8b80b43cf9e5ba85c99e670f01a52b"
+        }
+    ],
+    "hashType": "sha256"
+}
