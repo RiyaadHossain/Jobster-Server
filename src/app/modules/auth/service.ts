@@ -10,7 +10,7 @@ const signIn = async (payload: IUserCredential) => {
   const { email, password } = payload;
 
   // Check User Existence
-  const userExist = await User.findOne({ email });
+  const userExist = await User.findOne({ email }).select('+password');
   if (!userExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User doesn't exist!");
   }
@@ -30,24 +30,21 @@ const signIn = async (payload: IUserCredential) => {
   const accessToken = jwtHelpers.generateToken(
     { userId, role },
     config.JWT.SECRET as Secret,
-    config.JWT.EXPIRES_IN as string
+    config.JWT.SECRET_EXPIRE as string
   );
 
   const refreshToken = jwtHelpers.generateToken(
     { userId, role },
-    config.JWT.REFRESH_SECRET as Secret,
-    config.JWT.REFRESH_EXPIRES_IN as string
+    config.JWT.REFRESH as Secret,
+    config.JWT.REFRESH_EXPIRE as string
   );
 
   return { accessToken, refreshToken };
 };
 
-const refreshToken = async (token: string) => {
+const accessToken = async (token: string) => {
   // Refresh Token Verificaiton
-  const decoded = jwtHelpers.verifyToken(
-    token,
-    config.JWT.REFRESH_SECRET as Secret
-  );
+  const decoded = jwtHelpers.verifyToken(token, config.JWT.REFRESH as Secret);
 
   const { userId, role } = decoded;
 
@@ -60,17 +57,17 @@ const refreshToken = async (token: string) => {
   const accessToken = jwtHelpers.generateToken(
     { userId, role },
     config.JWT.SECRET as Secret,
-    config.JWT.EXPIRES_IN as string
+    config.JWT.SECRET_EXPIRE as string
   );
 
   return { accessToken };
 };
 
-const changePassword = async (payload: IUserCredential) => {
-  const { id, oldPassword, newPassword } = payload;
+const changePassword = async (payload: IUserCredential, userId: string) => {
+  const { oldPassword, newPassword } = payload;
 
   // Check User Existence
-  const userExist = await User.findOne({ id }).select('+password');
+  const userExist = await User.findOne({ id: userId }).select('+password');
   if (!userExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User doesn't exist!");
   }
@@ -88,4 +85,4 @@ const changePassword = async (payload: IUserCredential) => {
   await userExist.save();
 };
 
-export const AuthServices = { signIn, refreshToken, changePassword };
+export const AuthServices = { signIn, accessToken, changePassword };

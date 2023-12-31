@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { ICandidate } from './interface';
 
 const candidateSchema = new Schema<ICandidate>({
+  id: { type: String, required: true },
   name: { type: String, required: true, minlength: 3, maxlength: 16 },
   avatar: { type: String },
   banner: { type: String },

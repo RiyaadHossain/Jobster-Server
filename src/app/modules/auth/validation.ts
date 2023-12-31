@@ -7,7 +7,7 @@ const signIn = z.object({
   }),
 });
 
-const refreshToken = z.object({
+const accessToken = z.object({
   cookies: z.object({
     refreshToken: z.string({ required_error: 'Refresh Token is required' }),
   }),
@@ -15,10 +15,12 @@ const refreshToken = z.object({
 
 const changePassword = z.object({
   body: z.object({
-    email: z.string({ required_error: 'Email is required' }).email(),
     oldPassword: z.string({ required_error: 'Old Password is required' }),
-    newPassword: z.string({ required_error: 'New Password is required' }),
+    newPassword: z
+      .string({ required_error: 'New Password is required' })
+      .min(6)
+      .max(32),
   }),
 });
 
-export const AuthValidations = { signIn, refreshToken, changePassword };
+export const AuthValidations = { signIn, accessToken, changePassword };

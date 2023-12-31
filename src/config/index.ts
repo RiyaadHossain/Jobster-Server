@@ -14,8 +14,8 @@ export default {
   DEFAULT_ADMIN_PASS: process.env.DEFAULT_ADMIN_PASS,
   JWT: {
     SECRET: process.env.JWT_SECRET,
-    REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
-    EXPIRES_IN: process.env.JWT_EXPIRES_IN,
-    REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
+    REFRESH: process.env.JWT_REFRESH,
+    SECRET_EXPIRE: process.env.JWT_SECRET_EXPIRE,
+    REFRESH_EXPIRE: process.env.JWT_REFRESH_EXPIRE,
   },
 };

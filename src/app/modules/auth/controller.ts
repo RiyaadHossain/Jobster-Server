@@ -15,7 +15,7 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
     httpOnly: true,
   };
 
-  res.cookie('refreshToken', refreshToken, cookieOptions);
+  res.cookie('refreshToken', result.refreshToken, cookieOptions);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -25,21 +25,23 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const refreshToken: RequestHandler = catchAsync(async (req, res) => {
+const accessToken: RequestHandler = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
-  const result = await AuthServices.refreshToken(refreshToken);
+  console.log(req.cookies)
+  const result = await AuthServices.accessToken(refreshToken);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Refresh token generated successfully',
+    message: 'Access token generated successfully',
     data: result,
   });
 });
 
 const changePassword: RequestHandler = catchAsync(async (req, res) => {
   const userCredential = req.body;
-  await AuthServices.changePassword(userCredential);
+  const user = req.user?.userId as string;
+  await AuthServices.changePassword(userCredential, user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -48,4 +50,4 @@ const changePassword: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-export const AuthControllers = { signIn, refreshToken, changePassword };
+export const AuthControllers = { signIn, accessToken, changePassword };

@@ -1,4 +1,5 @@
 export type ICandidate = {
+  id: string;
   name: string;
   avatar: string;
   banner: string;

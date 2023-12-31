@@ -13,9 +13,9 @@ router.post(
 );
 
 router.post(
-  '/refresh-token',
-  validateRequest(AuthValidations.signIn),
-  AuthControllers.refreshToken
+  '/access-token',
+  validateRequest(AuthValidations.accessToken),
+  AuthControllers.accessToken
 );
 
 router.post(

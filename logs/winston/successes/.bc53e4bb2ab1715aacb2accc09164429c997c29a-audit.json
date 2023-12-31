@@ -14,6 +14,16 @@
             "date": 1703934555801,
             "name": "/home/riyad/Documents/Projects/Jobster/Backend/logs/winston/successes/phu-2023-30-12-17-success.log",
             "hash": "f757c54b8d0a26a811c00414dec8e4b7766ec9e404094d4033b451280c4b0720"
+        },
+        {
+            "date": 1703995601043,
+            "name": "/home/riyad/Documents/Projects/Jobster/Backend/logs/winston/successes/phu-2023-31-12-10-success.log",
+            "hash": "c5b657a8ea512cd1bb9c395a81024f104f8becb8fcfe77d9b7695886e6ba1ce5"
+        },
+        {
+            "date": 1703999804824,
+            "name": "/home/riyad/Documents/Projects/Jobster/Backend/logs/winston/successes/phu-2023-31-12-11-success.log",
+            "hash": "2aea77c70b0931e0e833de1e69c43ec17b06e033056524cad12a33f2f9584243"
         }
     ],
     "hashType": "sha256"

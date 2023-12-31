@@ -10,7 +10,7 @@ import Candidate from '../candidate/model';
 
 const signUp = async (payload: IUser, name: string) => {
   // 1. Is user exist
-  const isExist = await User.isUserExist(payload.id);
+  const isExist = await User.findOne({ email: payload.email });
   if (isExist)
     throw new ApiError(httpStatus.BAD_REQUEST, 'User account is already exist');
 
@@ -18,6 +18,7 @@ const signUp = async (payload: IUser, name: string) => {
   const session = await mongoose.startSession();
 
   try {
+    session.startTransaction()
     let userInfo = null;
     const userData = { name, id: '' };
 
@@ -42,7 +43,7 @@ const signUp = async (payload: IUser, name: string) => {
       );
 
     const user = await User.create([payload], { session });
-    
+
     if (!user)
       throw new ApiError(
         httpStatus.BAD_REQUEST,

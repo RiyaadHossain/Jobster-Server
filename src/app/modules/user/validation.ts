@@ -3,13 +3,18 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 
 const signUp = z.object({
   body: z.object({
-    email: z.string({ required_error: 'Email is required' }).email(),
-    role: z.enum([...Object.values(ENUM_USER_ROLE)] as [string, ...string[]]),
-    password: z.string({ required_error: 'Password is required' }),
-    phoneNumber: z.string({ required_error: 'Phone Number is required' }),
-    candidate: z.string(),
-    company: z.string(),
-    admin: z.string(),
+    user: z.object({
+      email: z.string({ required_error: 'Email is required' }).email(),
+      role: z.enum([...Object.values(ENUM_USER_ROLE)] as [string, ...string[]]),
+      password: z
+        .string({ required_error: 'Password is required' })
+        .min(6)
+        .max(32),
+      candidate: z.string().optional(),
+      company: z.string().optional(),
+      admin: z.string().optional(),
+    }),
+    name: z.string({ required_error: 'Name is required' }),
   }),
 });
 

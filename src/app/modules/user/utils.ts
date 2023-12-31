@@ -14,7 +14,7 @@ const generateId = async (role: ENUM_USER_ROLE) => {
 
   const lastUserId = (await getLastUserId(role)) || String(0).padStart(5, '0');
   let generatedId = (parseInt(lastUserId) + 1).toString().padStart(5, '0');
-  generatedId = `${prefix}-${lastUserId}`;
+  generatedId = `${prefix}-${generatedId}`;
 
   return generatedId;
 };
