@@ -9,6 +9,8 @@ import User from '../user/model';
 import { filterAbleFields } from './constant';
 import { ICompany } from './interface';
 import Company from './model';
+import Job from '../job/model';
+import Application from '../application/model';
 
 const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -62,7 +64,7 @@ const getCompany = async (id: string, user: JwtPayload | null) => {
     // - Send notification
   }
 
-  const availableJobs = /* await Job.find({ company: id }); */ '';
+  const availableJobs = await Job.find({ company: id });
 
   return { company, availableJobs };
 };
@@ -81,4 +83,47 @@ const editProfile = async (userId: string, payload: ICompany) => {
   return updatedData;
 };
 
-export const CompanyServices = { getAllCompanies, getCompany, editProfile };
+const myJobs = async (userId: string) => {
+  const company = await Company.findOne({ id: userId });
+  if (!company)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Company account is not exist!');
+
+  const jobs = await Job.find({ company: company._id });
+  const jobIds = jobs.map(job => job._id);
+
+  const applications = await Application.find({
+    job: { $in: jobIds },
+  });
+
+  jobs.forEach(job => {
+    const applied = applications.find(item => item.job.equals(job._id));
+    if (applied) job.applications.push(applied); // ! fix this
+  });
+
+  // -Need the jobs along with its total applications
+
+  return jobs;
+};
+
+const appliedCandidates = async (userId: string) => {
+  const company = await Company.findOne({ id: userId });
+  if (!company)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Company account is not exist!');
+
+  const jobs = await Job.find({ company: company._id });
+  const jobIds = jobs.map(job => job._id);
+
+  const applications = await Application.find({
+    job: { $in: jobIds },
+  }).populate('candidate');
+
+  // -Need the candidates list who applied company's job
+};
+
+export const CompanyServices = {
+  getAllCompanies,
+  getCompany,
+  editProfile,
+  myJobs,
+  appliedCandidates,
+};

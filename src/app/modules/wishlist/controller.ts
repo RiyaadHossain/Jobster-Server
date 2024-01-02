@@ -2,29 +2,29 @@ import catchAsync from '@/shared/catchAsync';
 import sendResponse from '@/shared/sendResponse';
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
-import { ApplicaitonServices } from './service';
+import { WishlistServices } from './services';
 
-const apply: RequestHandler = catchAsync(async (req, res) => {
-  const applicationData = req.body;
+const add: RequestHandler = catchAsync(async (req, res) => {
+  const wishlistData = req.body;
   const userId = req.user?.userId;
-  const result = await ApplicaitonServices.apply(applicationData, userId);
+  const result = await WishlistServices.add(wishlistData, userId);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: 'Job Applied successfully',
+    message: 'Job added to wishlist successfully',
     data: result,
   });
 });
 
-const myApplications: RequestHandler = catchAsync(async (req, res) => {
+const myList: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.user?.userId;
-  const result = await ApplicaitonServices.myApplications(userId);
+  const result = await WishlistServices.myList(userId);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: 'My Applications retrived successfully',
+    message: 'Wishlist items retrived successfully',
     data: result,
   });
 });
@@ -32,14 +32,14 @@ const myApplications: RequestHandler = catchAsync(async (req, res) => {
 const remove: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
   const userId = req.user?.userId;
-  const result = await ApplicaitonServices.remove(id, userId);
+  const result = await WishlistServices.remove(id, userId);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: 'Job application removed successfully',
+    message: 'Wishlist item deleted successfully',
     data: result,
   });
 });
 
-export const ApplicationControllers = { apply, myApplications, remove };
+export const WishlistControllers = { add, myList, remove };

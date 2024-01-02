@@ -50,4 +50,34 @@ const editProfile: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-export const CompanyControllers = { getAllCompanies, getCompany, editProfile };
+const myJobs: RequestHandler = catchAsync(async (req, res) => {
+  const userId = req.user?.userId;
+  const result = await CompanyServices.myJobs(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'My jobs data retrieved successfully',
+    data: result,
+  });
+});
+
+const appliedCandidates: RequestHandler = catchAsync(async (req, res) => {
+  const userId = req.user?.userId;
+  const result = await CompanyServices.appliedCandidates(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Applied candidates data successfully',
+    data: result,
+  });
+});
+
+export const CompanyControllers = {
+  getAllCompanies,
+  getCompany,
+  editProfile,
+  myJobs,
+  appliedCandidates,
+};

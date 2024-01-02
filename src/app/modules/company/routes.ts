@@ -7,7 +7,6 @@ import { CompanyValidations } from './validation';
 const router = express.Router();
 
 router.get('/', CompanyControllers.getAllCompanies);
-router.get('/:id', CompanyControllers.getCompany);
 
 router.patch(
   '/edit-profile',
@@ -15,5 +14,9 @@ router.patch(
   validateRequest(CompanyValidations.editProfile),
   CompanyControllers.editProfile
 );
+
+router.get('/my-jobs', CompanyControllers.myJobs);
+router.get('/applied-candidates', CompanyControllers.appliedCandidates);
+router.get('/:id', CompanyControllers.getCompany);
 
 export const CompanyRoutes = router;
