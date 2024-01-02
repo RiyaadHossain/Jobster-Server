@@ -1,5 +1,5 @@
+import { ENUM_USER_ROLE } from '@/enums/user';
 import { z } from 'zod';
-import { ENUM_USER_ROLE } from '../../../enums/user';
 
 const signUp = z.object({
   body: z.object({

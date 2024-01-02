@@ -1,16 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import config from '@/config';
+import ApiError from '@/errors/ApiError';
+import handleValidationError from '@/errors/handleValidationError';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-import config from '../../config';
-import ApiError from '../../errors/ApiError';
-import handleValidationError from '../../errors/handleValidationError';
 
+import handleCastError from '@/errors/handleCastError';
+import handleZodError from '@/errors/handleZodError';
+import { IGenericErrorMessage } from '@/interfaces/error';
 import { ZodError } from 'zod';
-import handleCastError from '../../errors/handleCastError';
-import handleZodError from '../../errors/handleZodError';
-import { IGenericErrorMessage } from '../../interfaces/error';
-import { errorlogger } from '../../shared/logger';
 
 const globalErrorHandler: ErrorRequestHandler = (
   error,
@@ -20,7 +19,7 @@ const globalErrorHandler: ErrorRequestHandler = (
 ) => {
   config.ENV === 'development'
     ? console.log(`🐱 globalErrorHandler ~~`, { error })
-    : errorlogger.error(`🐱 globalErrorHandler ~~`, error);
+    : console.log(`🐱 globalErrorHandler ~~`, error);
 
   let statusCode = 500;
   let message = 'Something went wrong !';

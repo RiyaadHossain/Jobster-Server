@@ -1,9 +1,9 @@
+import { ENUM_USER_ROLE } from '@/enums/user';
+import auth from '@middlewares/auth';
+import validateRequest from '@middlewares/validateRequest';
 import express from 'express';
-import validateRequest from '../../middlewares/validateRequest';
-import { AuthValidations } from './validation';
 import { AuthControllers } from './controller';
-import auth from '../../middlewares/auth';
-import { ENUM_USER_ROLE } from '../../../enums/user';
+import { AuthValidations } from './validation';
 const router = express.Router();
 
 router.post(

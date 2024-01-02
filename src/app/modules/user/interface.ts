@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { Model, Types } from 'mongoose';
-import { ENUM_USER_ROLE } from '../../../enums/user';
+import { ENUM_USER_ROLE } from '@/enums/user';
+import { Types } from 'mongoose';
+import { Model } from 'mongoose';
 
 export type IUser = {
+  payload: import("mongoose").Types.ObjectId;
   id: string;
   email: string;
   password: string;

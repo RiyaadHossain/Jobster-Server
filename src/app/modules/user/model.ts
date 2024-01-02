@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
+import { ENUM_USER_ROLE } from '@/enums/user';
+import config from '@config';
 import bcrypt from 'bcrypt';
-import { Schema, Types, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IUser, UserModel } from './interface';
-import { ENUM_USER_ROLE } from '../../../enums/user';
-import config from '../../../config';
 
 const userSchema = new Schema<IUser>(
   {
@@ -17,9 +17,9 @@ const userSchema = new Schema<IUser>(
       required: true,
       select: 0,
     },
-    candidate: { type: Types.ObjectId, ref: 'Candidate' },
-    company: { type: Types.ObjectId, ref: 'Company' },
-    admin: { type: Types.ObjectId, ref: 'Admin' },
+    candidate: { type: Schema.Types.ObjectId, ref: 'Candidate' },
+    company: { type: Schema.Types.ObjectId, ref: 'Company' },
+    admin: { type: Schema.Types.ObjectId, ref: 'Admin' },
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );
@@ -35,10 +35,7 @@ userSchema.pre('save', async function () {
 
 // To check User Existence
 userSchema.statics.isUserExist = async function (id: string) {
-  const isUserExist = await User.findOne(
-    { id },
-    { id: 1, password: 1, role: 1 }
-  );
+  const isUserExist = await User.findOne({ id });
 
   return isUserExist;
 };

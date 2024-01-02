@@ -1,9 +1,9 @@
+import config from '@config';
 import { RequestHandler } from 'express';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { AuthServices } from './service';
-import config from '../../../config';
+import catchAsync from '@/shared/catchAsync';
+import sendResponse from '@/shared/sendResponse';
 
 const signIn: RequestHandler = catchAsync(async (req, res) => {
   const userCredential = req.body;
@@ -27,7 +27,6 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
 
 const accessToken: RequestHandler = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
-  console.log(req.cookies)
   const result = await AuthServices.accessToken(refreshToken);
 
   sendResponse(res, {

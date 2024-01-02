@@ -1,14 +1,14 @@
-import { ENUM_USER_ROLE } from '../../../enums/user';
+import { ENUM_USER_ROLE } from '@/enums/user';
 import User from './model';
 
 const getLastUserId = async (role: ENUM_USER_ROLE) => {
   const user = await User.findOne({ role }).sort({ createdAt: -1 });
 
-  return user?.id;
+  return user?.id.substr(3);
 };
 
 const generateId = async (role: ENUM_USER_ROLE) => {
-  let prefix = 'A';
+  let prefix = 'AD';
   if (role !== ENUM_USER_ROLE.ADMIN)
     prefix = role === ENUM_USER_ROLE.CANDIDATE ? 'CA' : 'CO';
 
@@ -20,4 +20,3 @@ const generateId = async (role: ENUM_USER_ROLE) => {
 };
 
 export const UserUtils = { generateId };
-

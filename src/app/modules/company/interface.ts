@@ -1,6 +1,7 @@
 export type ICompany = {
   id: string;
   name: string;
+  profileView: number;
   logo: string;
   banner: string;
   phoneNumber: string;

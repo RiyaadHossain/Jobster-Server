@@ -1,12 +1,12 @@
-import mongoose from 'mongoose';
+import { ENUM_USER_ROLE } from '@/enums/user';
+import ApiError from '@/errors/ApiError';
 import httpStatus from 'http-status';
-import ApiError from '../../../errors/ApiError';
+import mongoose from 'mongoose';
+import Candidate from '../candidate/model';
+import Company from '../company/model';
 import { IUser } from './interface';
 import User from './model';
-import Company from '../company/model';
-import { ENUM_USER_ROLE } from '../../../enums/user';
 import { UserUtils } from './utils';
-import Candidate from '../candidate/model';
 
 const signUp = async (payload: IUser, name: string) => {
   // 1. Is user exist
@@ -18,7 +18,7 @@ const signUp = async (payload: IUser, name: string) => {
   const session = await mongoose.startSession();
 
   try {
-    session.startTransaction()
+    session.startTransaction();
     let userInfo = null;
     const userData = { name, id: '' };
 

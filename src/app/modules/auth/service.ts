@@ -1,10 +1,10 @@
+import ApiError from '@/errors/ApiError';
+import { jwtHelpers } from '@/helpers/jwtHelpers';
+import config from '@config';
 import httpStatus from 'http-status';
-import ApiError from '../../../errors/ApiError';
-import { IUserCredential } from './interface';
-import User from '../user/model';
-import config from '../../../config';
-import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { Secret } from 'jsonwebtoken';
+import User from '../user/model';
+import { IUserCredential } from './interface';
 
 const signIn = async (payload: IUserCredential) => {
   const { email, password } = payload;

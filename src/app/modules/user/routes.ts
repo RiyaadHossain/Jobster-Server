@@ -1,7 +1,7 @@
+import validateRequest from '@middlewares/validateRequest';
 import express from 'express';
-import validateRequest from '../../middlewares/validateRequest';
-import { UserValidations } from './validation';
 import { UserControllers } from './controller';
+import { UserValidations } from './validation';
 const router = express.Router();
 
 router.post(
@@ -9,6 +9,5 @@ router.post(
   validateRequest(UserValidations.signUp),
   UserControllers.signUp
 );
-
 
 export const UserRoutes = router;
