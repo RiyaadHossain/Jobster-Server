@@ -89,20 +89,24 @@ const myJobs = async (userId: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Company account is not exist!');
 
   const jobs = await Job.find({ company: company._id });
-  const jobIds = jobs.map(job => job._id);
 
-  const applications = await Application.find({
-    job: { $in: jobIds },
-  });
+  // Create an array to store job details along with applications' ids
+  const jobsWithApplications = await Promise.all(
+    jobs.map(async job => {
+      const applications = await Application.find({
+        job: job._id,
+      });
 
-  jobs.forEach(job => {
-    const applied = applications.find(item => item.job.equals(job._id));
-    if (applied) job.applications.push(applied); // ! fix this
-  });
+      const applicationIds = applications.map(application => application._id);
 
-  // -Need the jobs along with its total applications
+      return {
+        job: job.toObject(),
+        applications: applicationIds,
+      };
+    })
+  );
 
-  return jobs;
+  return jobsWithApplications;
 };
 
 const appliedCandidates = async (userId: string) => {
@@ -115,9 +119,13 @@ const appliedCandidates = async (userId: string) => {
 
   const applications = await Application.find({
     job: { $in: jobIds },
-  }).populate('candidate');
+  })
+    .populate([
+      { path: 'job', select: '_id title' },
+      { path: 'candidate', select: '_id name location' },
+    ])
 
-  // -Need the candidates list who applied company's job
+  return applications;
 };
 
 export const CompanyServices = {

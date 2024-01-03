@@ -29,6 +29,20 @@ const myApplications: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const updateStatus: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const status = req.body;
+  const userId = req.user?.userId;
+  const result = await ApplicaitonServices.updateStatus(id, status, userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: 'Job application status updated successfully',
+    data: result,
+  });
+});
+
 const remove: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
   const userId = req.user?.userId;
@@ -42,4 +56,9 @@ const remove: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-export const ApplicationControllers = { apply, myApplications, remove };
+export const ApplicationControllers = {
+  apply,
+  myApplications,
+  updateStatus,
+  remove,
+};

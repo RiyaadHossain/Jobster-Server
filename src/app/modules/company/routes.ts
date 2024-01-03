@@ -15,8 +15,14 @@ router.patch(
   CompanyControllers.editProfile
 );
 
-router.get('/my-jobs', CompanyControllers.myJobs);
-router.get('/applied-candidates', CompanyControllers.appliedCandidates);
+router.get('/my-jobs', auth(ENUM_USER_ROLE.COMPANY), CompanyControllers.myJobs);
+
+router.get(
+  '/applied-candidates',
+  auth(ENUM_USER_ROLE.COMPANY),
+  CompanyControllers.appliedCandidates
+);
+
 router.get('/:id', CompanyControllers.getCompany);
 
 export const CompanyRoutes = router;

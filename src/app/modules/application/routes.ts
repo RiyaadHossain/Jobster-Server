@@ -20,6 +20,13 @@ router.get(
   ApplicationControllers.myApplications
 );
 
+router.patch(
+  '/update-status/:id',
+  auth(ENUM_USER_ROLE.COMPANY),
+  validateRequest(ApplicationValidations.updateStatus),
+  ApplicationControllers.updateStatus
+);
+
 router.delete(
   '/remove/:id',
   auth(ENUM_USER_ROLE.CANDIDATE),
