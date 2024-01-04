@@ -13,14 +13,14 @@ import Candidate from '../candidate/model';
 import Job from '../job/model';
 
 const apply = async (payload: IApplication, userId: string) => {
-  const job = await Job.findById(payload.job).select('_id title');
+  const job = await Job.findById(payload.job);
   if (!job) throw new ApiError(httpStatus.NOT_FOUND, "Job offer doesn't exist");
 
-  const company = await Company.findById(job.company).select('_id name');
+  const company = await Company.findById(job.company);
   if (!company)
     throw new ApiError(httpStatus.NOT_FOUND, "Company doesn't exist anymore");
 
-  const candidate = await Candidate.findOne({ id: userId }).select('_id name');
+  const candidate = await Candidate.findOne({ id: userId });
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not exist');
 
