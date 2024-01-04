@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import ApiError from '@/errors/ApiError';
 import { IApplication } from './interface';
 import { ApplicationUtils } from './utils';
@@ -6,12 +5,22 @@ import httpStatus from 'http-status';
 import Application from './model';
 import { ENUM_APPLICATION_STATUS } from '@/enums/application';
 import Company from '../company/model';
+import { NotificationServices } from '../notiifcaiton/service';
+import { ENUM_NOFICATION_TYPE } from '@/enums/notification';
+import { ENUM_USER_ROLE } from '@/enums/user';
+import { INotification } from '../notiifcaiton/interface';
+import Candidate from '../candidate/model';
+import Job from '../job/model';
 
 const apply = async (payload: IApplication, userId: string) => {
-  if (!(await ApplicationUtils.isJobExist(payload.job as unknown as string)))
-    throw new ApiError(httpStatus.NOT_FOUND, "Job offer doesn't exist");
+  const job = await Job.findById(payload.job).select('_id title');
+  if (!job) throw new ApiError(httpStatus.NOT_FOUND, "Job offer doesn't exist");
 
-  const candidate = await ApplicationUtils.isCandidateExist(userId);
+  const company = await Company.findById(job.company).select('_id name');
+  if (!company)
+    throw new ApiError(httpStatus.NOT_FOUND, "Company doesn't exist anymore");
+
+  const candidate = await Candidate.findOne({ id: userId }).select('_id name');
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not exist');
 
@@ -27,7 +36,19 @@ const apply = async (payload: IApplication, userId: string) => {
 
   const data = await Application.create(payload);
 
-  // - Send notification to candidate
+  // Send notification to company
+  const notificationPayload: INotification = {
+    type: ENUM_NOFICATION_TYPE.APPLY,
+    from: {
+      _id: candidate._id,
+      name: candidate.name,
+      role: ENUM_USER_ROLE.CANDIDATE,
+    },
+    to: { _id: company._id, name: company.name, role: ENUM_USER_ROLE.COMPANY },
+    job: job,
+  };
+
+  NotificationServices.createNotification(notificationPayload);
 
   return data;
 };
@@ -46,7 +67,7 @@ const myApplications = async (userId: string) => {
 
 const updateStatus = async (
   id: string,
-  status: { [key: string]: ENUM_APPLICATION_STATUS },
+  status: ENUM_APPLICATION_STATUS,
   userId: string
 ) => {
   const application = await Application.findById(id).populate('job');
@@ -70,12 +91,46 @@ const updateStatus = async (
       `You've already ${application.status} the application`
     );
 
-  const data = await Application.findByIdAndUpdate(id, status, {
-    new: true,
-    runValidators: true,
-  });
+  const data = await Application.findByIdAndUpdate(
+    id,
+    { status },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
-  // - Send notification to candidate
+  // Send notification to candidate
+  const type =
+    status === ENUM_APPLICATION_STATUS.ACCEPTED
+      ? ENUM_NOFICATION_TYPE.APPLICATION_ACCEPTED
+      : ENUM_NOFICATION_TYPE.APPLICATIN_REJECTED;
+
+  const candidate = await Candidate.findById(application.candidate);
+  const job = await Job.findById(application.job);
+
+  if (!candidate || !job)
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Candidate/job doesn't exist anymore"
+    );
+
+  const notificationPayload: INotification = {
+    type,
+    from: {
+      _id: company._id,
+      name: company.name,
+      role: ENUM_USER_ROLE.COMPANY,
+    },
+    to: {
+      _id: candidate._id,
+      name: candidate.name,
+      role: ENUM_USER_ROLE.CANDIDATE,
+    },
+    job,
+  };
+
+  NotificationServices.createNotification(notificationPayload);
 
   return data;
 };

@@ -9,6 +9,10 @@ import User from '../user/model';
 import { filterAbleFields } from './constant';
 import { ICandidate } from './interface';
 import Candidate from './model';
+import { NotificationServices } from '../notiifcaiton/service';
+import { INotification } from '../notiifcaiton/interface';
+import { ENUM_NOFICATION_TYPE } from '@/enums/notification';
+import { ENUM_USER_ROLE } from '@/enums/user';
 
 const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -53,13 +57,33 @@ const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
   return { meta, data: Candidates };
 };
 
-const getCandidate = async (id: string, user: JwtPayload | null) => {
-  const candidate = await Candidate.findById(id);
+const getCandidate = async (id: string, authUser: JwtPayload | null) => {
+  const candidate = await Candidate.findById(id).select('_id name');
 
-  if (user && candidate) {
+  if (authUser && candidate) {
     candidate.profileView++;
     candidate.save();
-    // - Send notification
+
+    // Send notification to candidate
+    const user = await User.getRoleSpecificDetails(authUser.userId);
+
+    if (!user)
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Notification sender account doesn't exist"
+      );
+
+    const notificationPayload: INotification = {
+      type: ENUM_NOFICATION_TYPE.APPLY,
+      from: { _id: user._id, name: user.name, role: authUser.role },
+      to: {
+        _id: candidate._id,
+        name: candidate.name,
+        role: ENUM_USER_ROLE.CANDIDATE,
+      },
+    };
+
+    NotificationServices.createNotification(notificationPayload);
   }
 
   return candidate;

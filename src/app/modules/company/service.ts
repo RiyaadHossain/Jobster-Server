@@ -11,6 +11,10 @@ import { ICompany } from './interface';
 import Company from './model';
 import Job from '../job/model';
 import Application from '../application/model';
+import { INotification } from '../notiifcaiton/interface';
+import { ENUM_USER_ROLE } from '@/enums/user';
+import { NotificationServices } from '../notiifcaiton/service';
+import { ENUM_NOFICATION_TYPE } from '@/enums/notification';
 
 const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -55,13 +59,35 @@ const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
   return { meta, data: compnaies };
 };
 
-const getCompany = async (id: string, user: JwtPayload | null) => {
+const getCompany = async (id: string, authUser: JwtPayload | null) => {
+  if (!authUser)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User credential is missing');
+
   const company = await Company.findById(id);
 
-  if (user && company) {
+  if (authUser && company) {
     company.profileView++;
     company.save();
-    // - Send notification
+    // Send notification to company
+    const user = await User.getRoleSpecificDetails(authUser.userId);
+
+    if (!user)
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Notification sender account doesn't exist"
+      );
+
+    const notificationPayload: INotification = {
+      type: ENUM_NOFICATION_TYPE.PROFILE_VIEW,
+      from: { _id: user._id, name: user.name, role: authUser.role },
+      to: {
+        _id: company._id,
+        name: company.name,
+        role: ENUM_USER_ROLE.COMPANY,
+      },
+    };
+
+    NotificationServices.createNotification(notificationPayload);
   }
 
   const availableJobs = await Job.find({ company: id });
@@ -119,11 +145,10 @@ const appliedCandidates = async (userId: string) => {
 
   const applications = await Application.find({
     job: { $in: jobIds },
-  })
-    .populate([
-      { path: 'job', select: '_id title' },
-      { path: 'candidate', select: '_id name location' },
-    ])
+  }).populate([
+    { path: 'job', select: '_id title' },
+    { path: 'candidate', select: '_id name location' },
+  ]);
 
   return applications;
 };

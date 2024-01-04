@@ -6,6 +6,7 @@ import { CandidateRoutes } from '@modules/candidate/routes';
 import { JobRoutes } from '@modules/job/routes';
 import { ApplicationRoutes } from '../modules/application/routes';
 import { WishlistRoutes } from '../modules/wishlist/routes';
+import { NotificationRoutes } from '../modules/notiifcaiton/routes';
 
 const router = express.Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/wishlist',
     routes: WishlistRoutes,
+  },
+  {
+    path: '/notification',
+    routes: NotificationRoutes,
   },
 ];
 

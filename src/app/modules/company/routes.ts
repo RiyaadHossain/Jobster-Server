@@ -23,6 +23,15 @@ router.get(
   CompanyControllers.appliedCandidates
 );
 
-router.get('/:id', CompanyControllers.getCompany);
+router.get(
+  '/:id',
+  auth(
+    ENUM_USER_ROLE.CANDIDATE,
+    ENUM_USER_ROLE.COMPANY,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.SUPER_ADMIN
+  ),
+  CompanyControllers.getCompany
+);
 
 export const CompanyRoutes = router;

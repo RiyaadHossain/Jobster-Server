@@ -4,6 +4,8 @@ import config from '@config';
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import { IUser, UserModel } from './interface';
+import Candidate from '../candidate/model';
+import Company from '../company/model';
 
 const userSchema = new Schema<IUser>(
   {
@@ -48,6 +50,18 @@ userSchema.statics.isPasswordMatched = async function (
   const isPassMatched = await bcrypt.compare(givenPass, savedPass);
 
   return isPassMatched;
+};
+
+userSchema.statics.getRoleSpecificDetails = async function (id: string) {
+  let user = await User.findOne({ id });
+
+  if (user?.role === ENUM_USER_ROLE.CANDIDATE)
+    user = await Candidate.findOne({ id: id });
+
+  if (user?.role === ENUM_USER_ROLE.COMPANY)
+    user = await Company.findOne({ id: id });
+
+  return user;
 };
 
 const User = model<IUser, UserModel>('User', userSchema);

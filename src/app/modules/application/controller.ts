@@ -31,7 +31,7 @@ const myApplications: RequestHandler = catchAsync(async (req, res) => {
 
 const updateStatus: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
-  const status = req.body;
+  const status = req.body.status;
   const userId = req.user?.userId;
   const result = await ApplicaitonServices.updateStatus(id, status, userId);
 
