@@ -4,9 +4,10 @@ import { UserRoutes } from '@modules/user/routes';
 import { CompanyRoutes } from '@modules/company/routes';
 import { CandidateRoutes } from '@modules/candidate/routes';
 import { JobRoutes } from '@modules/job/routes';
-import { ApplicationRoutes } from '../modules/application/routes';
-import { WishlistRoutes } from '../modules/wishlist/routes';
-import { NotificationRoutes } from '../modules/notiifcaiton/routes';
+import { ApplicationRoutes } from '@modules/application/routes';
+import { WishlistRoutes } from '@modules/wishlist/routes';
+import { NotificationRoutes } from '@modules/notiifcaiton/routes';
+import { DashboardRoutes } from '@modules/dashboard/routes';
 
 const router = express.Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: '/notification',
     routes: NotificationRoutes,
+  },
+  {
+    path: '/dashboard',
+    routes: DashboardRoutes,
   },
 ];
 
