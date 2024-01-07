@@ -12,8 +12,8 @@ export const emailSender = async (payload: IEmail) => {
       port: 587,
       secure: false,
       auth: {
-        user: config.EMAIL.NAME,
-        pass: config.EMAIL.PASS,
+        user: config.SMTP.EMAIL,
+        pass: config.SMTP.PASS,
       },
     });
 
@@ -23,7 +23,7 @@ export const emailSender = async (payload: IEmail) => {
       to: payload.to,
       subject: payload.subject,
       text: payload.text,
-      // html: "",
+      html: payload.html,
     };
 
     //Step 3: Sending email

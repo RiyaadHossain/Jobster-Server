@@ -1,44 +1,40 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
-import { ENUM_USER_ROLE } from '@/enums/user';
-import config from '@config';
+import { ENUM_USER_ACCOUNT_STATUS, ENUM_USER_ROLE } from '@/enums/user';
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
-import { IUser, UserModel } from './interface';
+import { IUser, IUserMethods, UserModel } from './interface';
 import Candidate from '../candidate/model';
 import Company from '../company/model';
+import crypto from 'crypto';
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     id: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, enum: ENUM_USER_ROLE, required: true },
     password: {
       type: String,
-      minlength: 6,
-      maxlength: 32,
       required: true,
       select: 0,
     },
+    role: { type: String, enum: Object.values(ENUM_USER_ROLE), required: true },
     candidate: { type: Schema.Types.ObjectId, ref: 'Candidate' },
     company: { type: Schema.Types.ObjectId, ref: 'Company' },
     admin: { type: Schema.Types.ObjectId, ref: 'Admin' },
+    status: {
+      type: String,
+      enum: Object.values(ENUM_USER_ACCOUNT_STATUS),
+      default: ENUM_USER_ACCOUNT_STATUS.IN_ACTIVE,
+    },
+    confirmationToken: { type: String },
+    confirmationTokenExpires: { type: Date },
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );
 
-// Hash Password
-userSchema.pre('save', async function () {
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.BCRYPT_SALT_ROUNDS)
-  );
-});
 
 // To check User Existence
 userSchema.statics.isUserExist = async function (id: string) {
   const isUserExist = await User.findOne({ id });
-
   return isUserExist;
 };
 
@@ -52,6 +48,7 @@ userSchema.statics.isPasswordMatched = async function (
   return isPassMatched;
 };
 
+// To Get Role Specific user details
 userSchema.statics.getRoleSpecificDetails = async function (id: string) {
   let user = await User.findOne({ id });
 
@@ -62,6 +59,19 @@ userSchema.statics.getRoleSpecificDetails = async function (id: string) {
     user = await Company.findOne({ id: id });
 
   return user;
+};
+
+// To Generate Token
+userSchema.methods.generateToken = function () {
+  const token = crypto.randomBytes(32).toString('hex');
+  const user = this;
+  user.confirmationToken = token;
+
+  const date = new Date();
+  const expireDate = new Date(date.setDate(date.getDate() + 1));
+
+  user.confirmationTokenExpires = expireDate;
+  return token;
 };
 
 const User = model<IUser, UserModel>('User', userSchema);

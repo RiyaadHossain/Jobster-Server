@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { ENUM_USER_ROLE } from '@/enums/user';
+import { ENUM_USER_ACCOUNT_STATUS, ENUM_USER_ROLE } from '@/enums/user';
 import { Types } from 'mongoose';
 import { Model } from 'mongoose';
 import { ICompany } from '../company/interface';
 import { ICandidate } from '../candidate/interface';
 
 export type IUser = {
-  payload: import('mongoose').Types.ObjectId;
+  payload: Types.ObjectId;
   id: string;
   email: string;
   password: string;
@@ -15,9 +16,16 @@ export type IUser = {
   candidate?: Types.ObjectId;
   company?: Types.ObjectId;
   admin?: Types.ObjectId;
+  status: ENUM_USER_ACCOUNT_STATUS;
+  confirmationToken?: string;
+  confirmationTokenExpires?: Date;
 };
 
-export interface UserModel extends Model<IUser> {
+export interface IUserMethods {
+  generateToken(): string;
+}
+
+export interface UserModel extends Model<IUser, {}, IUserMethods> {
   isUserExist(id: string): Promise<IUser> | null;
   isPasswordMatched(givenPass: string, savedPass: string): Promise<boolean>;
   getRoleSpecificDetails(
@@ -28,3 +36,10 @@ export interface UserModel extends Model<IUser> {
     | null
   >;
 }
+
+export type IConfirmAccountMail = {
+  email: string;
+  token: string;
+  name: string;
+  URL: string;
+};

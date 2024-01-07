@@ -18,8 +18,11 @@ export default {
     SECRET_EXPIRE: process.env.JWT_SECRET_EXPIRE,
     REFRESH_EXPIRE: process.env.JWT_REFRESH_EXPIRE,
   },
-  EMAIL: {
-    NAME: process.env.EMAIL_NAME,
-    PASS: process.env.EMAIL_PASS,
+  SMTP: {
+    HOST: process.env.SMTP_HOST,
+    PORT: process.env.SMTP_PORT,
+    SECURE: process.env.SMTP_SECURE,
+    EMAIL: process.env.SMTP_EMAIL,
+    PASS: process.env.SMTP_PASS,
   },
 };

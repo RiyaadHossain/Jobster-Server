@@ -1,5 +1,11 @@
 import { ENUM_USER_ROLE } from '@/enums/user';
 import User from './model';
+import config from '@/config';
+import bcrypt from 'bcrypt';
+import { emailSender } from '@/helpers/emailSender';
+import ejs from 'ejs';
+import path from 'path';
+import { IConfirmAccountMail } from './interface';
 
 const getLastUserId = async (role: ENUM_USER_ROLE) => {
   const user = await User.findOne({ role }).sort({ createdAt: -1 });
@@ -19,4 +25,38 @@ const generateId = async (role: ENUM_USER_ROLE) => {
   return generatedId;
 };
 
-export const UserUtils = { generateId };
+const hashPassword = async (plainPassword: string) => {
+  const hashedPass = await bcrypt.hash(
+    plainPassword,
+    Number(config.BCRYPT_SALT_ROUNDS)
+  );
+  return hashedPass;
+};
+
+const sendConfirmationEmail = async ({
+  email,
+  token,
+  name,
+  URL,
+}: IConfirmAccountMail) => {
+  const confirmationURL = `${URL}/confirm-account/${name}/${token}`;
+
+  const templatePath = path.join(
+    __dirname,
+    '../../../views/templates/confirm-email.ejs'
+  );
+  const emailContent = await ejs.renderFile(templatePath, {
+    name,
+    confirmationURL,
+  });
+
+  const mailInfo = {
+    to: email,
+    subject: 'Confirm Your Account',
+    html: emailContent,
+  };
+
+  await emailSender(mailInfo);
+};
+
+export const UserUtils = { generateId, hashPassword, sendConfirmationEmail };

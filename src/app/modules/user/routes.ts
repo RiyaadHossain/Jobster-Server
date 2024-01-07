@@ -10,4 +10,6 @@ router.post(
   UserControllers.signUp
 );
 
+router.get('/confirm-account/:name/:token', UserControllers.confirmAccount);
+
 export const UserRoutes = router;

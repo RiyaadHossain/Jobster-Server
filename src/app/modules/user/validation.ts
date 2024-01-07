@@ -10,9 +10,6 @@ const signUp = z.object({
         .string({ required_error: 'Password is required' })
         .min(6)
         .max(32),
-      candidate: z.string().optional(),
-      company: z.string().optional(),
-      admin: z.string().optional(),
     }),
     name: z.string({ required_error: 'Name is required' }),
   }),
