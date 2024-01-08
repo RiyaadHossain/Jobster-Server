@@ -9,20 +9,20 @@ const router = express.Router();
 
 router.post(
   '/add',
-  auth(ENUM_USER_ROLE.CANDIDATE),
+  auth([ENUM_USER_ROLE.CANDIDATE]),
   validateRequest(WishlistValidations.add),
   WishlistControllers.add
 );
 
 router.get(
   '/my-list',
-  auth(ENUM_USER_ROLE.CANDIDATE),
+  auth([ENUM_USER_ROLE.CANDIDATE]),
   WishlistControllers.myList
 );
 
 router.delete(
   '/remove/:id',
-  auth(ENUM_USER_ROLE.CANDIDATE),
+  auth([ENUM_USER_ROLE.CANDIDATE]),
   WishlistControllers.remove
 );
 

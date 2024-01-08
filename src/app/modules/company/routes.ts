@@ -10,26 +10,33 @@ router.get('/', CompanyControllers.getAllCompanies);
 
 router.patch(
   '/edit-profile',
-  auth(ENUM_USER_ROLE.COMPANY),
+  auth([ENUM_USER_ROLE.COMPANY]),
   validateRequest(CompanyValidations.editProfile),
   CompanyControllers.editProfile
 );
 
-router.get('/my-jobs', auth(ENUM_USER_ROLE.COMPANY), CompanyControllers.myJobs);
+router.get(
+  '/my-jobs',
+  auth([ENUM_USER_ROLE.COMPANY]),
+  CompanyControllers.myJobs
+);
 
 router.get(
   '/applied-candidates',
-  auth(ENUM_USER_ROLE.COMPANY),
+  auth([ENUM_USER_ROLE.COMPANY]),
   CompanyControllers.appliedCandidates
 );
 
 router.get(
   '/:id',
   auth(
-    ENUM_USER_ROLE.CANDIDATE,
-    ENUM_USER_ROLE.COMPANY,
-    ENUM_USER_ROLE.ADMIN,
-    ENUM_USER_ROLE.SUPER_ADMIN
+    [
+      ENUM_USER_ROLE.CANDIDATE,
+      ENUM_USER_ROLE.COMPANY,
+      ENUM_USER_ROLE.ADMIN,
+      ENUM_USER_ROLE.SUPER_ADMIN,
+    ],
+    true
   ),
   CompanyControllers.getCompany
 );

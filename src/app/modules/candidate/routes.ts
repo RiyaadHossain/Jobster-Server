@@ -7,11 +7,23 @@ import { CandidateValidations } from './validation';
 const router = express.Router();
 
 router.get('/', CandidateControllers.getAllCandidates);
-router.get('/:id', CandidateControllers.getCandidate);
+router.get(
+  '/:id',
+  auth(
+    [
+      ENUM_USER_ROLE.SUPER_ADMIN,
+      ENUM_USER_ROLE.ADMIN,
+      ENUM_USER_ROLE.COMPANY,
+      ENUM_USER_ROLE.CANDIDATE,
+    ],
+    true
+  ),
+  CandidateControllers.getCandidate
+);
 
 router.patch(
   '/edit-profile',
-  auth(ENUM_USER_ROLE.CANDIDATE),
+  auth([ENUM_USER_ROLE.CANDIDATE]),
   validateRequest(CandidateValidations.editProfile),
   CandidateControllers.editProfile
 );

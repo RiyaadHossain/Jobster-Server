@@ -7,18 +7,18 @@ const router = express.Router();
 
 router.get(
   '/overview',
-  auth(
+  auth([
     ENUM_USER_ROLE.SUPER_ADMIN,
     ENUM_USER_ROLE.ADMIN,
     ENUM_USER_ROLE.CANDIDATE,
-    ENUM_USER_ROLE.COMPANY
-  ),
+    ENUM_USER_ROLE.COMPANY,
+  ]),
   DashboardControllers.overview
 );
 
 router.get(
   '/application-stat',
-  auth(ENUM_USER_ROLE.CANDIDATE, ENUM_USER_ROLE.COMPANY),
+  auth([ENUM_USER_ROLE.CANDIDATE, ENUM_USER_ROLE.COMPANY]),
   DashboardControllers.applicationStat
 );
 

@@ -9,27 +9,27 @@ const router = express.Router();
 
 router.post(
   '/apply',
-  auth(ENUM_USER_ROLE.CANDIDATE),
+  auth([ENUM_USER_ROLE.CANDIDATE]),
   validateRequest(ApplicationValidations.apply),
   ApplicationControllers.apply
 );
 
 router.get(
   '/my-applications',
-  auth(ENUM_USER_ROLE.CANDIDATE),
+  auth([ENUM_USER_ROLE.CANDIDATE]),
   ApplicationControllers.myApplications
 );
 
 router.patch(
   '/update-status/:id',
-  auth(ENUM_USER_ROLE.COMPANY),
+  auth([ENUM_USER_ROLE.COMPANY]),
   validateRequest(ApplicationValidations.updateStatus),
   ApplicationControllers.updateStatus
 );
 
 router.delete(
   '/remove/:id',
-  auth(ENUM_USER_ROLE.CANDIDATE),
+  auth([ENUM_USER_ROLE.CANDIDATE]),
   ApplicationControllers.remove
 );
 
