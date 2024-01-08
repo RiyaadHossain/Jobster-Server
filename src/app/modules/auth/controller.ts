@@ -49,4 +49,32 @@ const changePassword: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-export const AuthControllers = { signIn, accessToken, changePassword };
+const forgetPassword: RequestHandler = catchAsync(async (req, res) => {
+  const email = req.body.email;
+  await AuthServices.forgetPassword(email);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Please check your email to reset password',
+  });
+});
+
+const resetPassword: RequestHandler = catchAsync(async (req, res) => {
+  const resetCredential = req.body;
+  await AuthServices.resetPassword(resetCredential);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password is reset successfully',
+  });
+});
+
+export const AuthControllers = {
+  signIn,
+  accessToken,
+  changePassword,
+  forgetPassword,
+  resetPassword,
+};

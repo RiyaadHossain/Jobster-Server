@@ -1,7 +1,5 @@
 import { ENUM_USER_ROLE } from '@/enums/user';
 import User from './model';
-import config from '@/config';
-import bcrypt from 'bcrypt';
 import { emailSender } from '@/helpers/emailSender';
 import ejs from 'ejs';
 import path from 'path';
@@ -25,13 +23,13 @@ const generateId = async (role: ENUM_USER_ROLE) => {
   return generatedId;
 };
 
-const hashPassword = async (plainPassword: string) => {
-  const hashedPass = await bcrypt.hash(
-    plainPassword,
-    Number(config.BCRYPT_SALT_ROUNDS)
-  );
-  return hashedPass;
-};
+// const hashPassword = async (plainPassword: string) => {
+//   const hashedPass = await bcrypt.hash(
+//     plainPassword,
+//     Number(config.BCRYPT_SALT_ROUNDS)
+//   );
+//   return hashedPass;
+// };
 
 const sendConfirmationEmail = async ({
   email,
@@ -59,4 +57,4 @@ const sendConfirmationEmail = async ({
   await emailSender(mailInfo);
 };
 
-export const UserUtils = { generateId, hashPassword, sendConfirmationEmail };
+export const UserUtils = { generateId,  sendConfirmationEmail };

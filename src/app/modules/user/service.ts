@@ -23,7 +23,6 @@ const signUp = async (payload: IUser, name: string, URL: string) => {
   // 3. Generate userId and hash password
   const id = await UserUtils.generateId(payload.role);
   payload.id = id;
-  payload.password = await UserUtils.hashPassword(payload.password);
 
   const user = await User.create(payload);
 
@@ -42,7 +41,7 @@ const signUp = async (payload: IUser, name: string, URL: string) => {
 };
 
 const confirmAccount = async (name: string, token: string) => {
-  console.log(name, token);
+
   // 1. Check user existence
   const user = await User.findOne({ confirmationToken: token });
   if (!user)

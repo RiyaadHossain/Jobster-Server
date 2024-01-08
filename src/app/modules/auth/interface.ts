@@ -5,3 +5,8 @@ export type IUserCredential = {
   oldPassword?: string;
   newPassword?: string;
 };
+
+export type IResetCredential = {
+  token: string;
+  newPassword: string
+}

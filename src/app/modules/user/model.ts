@@ -6,6 +6,7 @@ import { IUser, IUserMethods, UserModel } from './interface';
 import Candidate from '../candidate/model';
 import Company from '../company/model';
 import crypto from 'crypto';
+import config from '@/config';
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
@@ -27,10 +28,25 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     },
     confirmationToken: { type: String },
     confirmationTokenExpires: { type: Date },
+    resetPasswordToken: { type: String },
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );
 
+// To Hash password
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.BCRYPT_SALT_ROUNDS)
+  );
+
+  next();
+});
 
 // To check User Existence
 userSchema.statics.isUserExist = async function (id: string) {

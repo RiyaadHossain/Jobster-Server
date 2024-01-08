@@ -19,6 +19,7 @@ export type IUser = {
   status: ENUM_USER_ACCOUNT_STATUS;
   confirmationToken?: string;
   confirmationTokenExpires?: Date;
+  resetPasswordToken?: string;
 };
 
 export interface IUserMethods {

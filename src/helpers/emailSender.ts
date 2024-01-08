@@ -8,8 +8,8 @@ export const emailSender = async (payload: IEmail) => {
   try {
     //Step 1: Creating the transporter
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
+      host: config.SMTP.HOST,
+      port: Number(config.SMTP.PORT),
       secure: false,
       auth: {
         user: config.SMTP.EMAIL,

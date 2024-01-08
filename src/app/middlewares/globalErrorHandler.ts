@@ -10,6 +10,7 @@ import handleCastError from '@/errors/handleCastError';
 import handleZodError from '@/errors/handleZodError';
 import { IGenericErrorMessage } from '@/interfaces/error';
 import { ZodError } from 'zod';
+import handleJWTError from '@/errors/handleJWTError';
 
 const globalErrorHandler: ErrorRequestHandler = (
   error,
@@ -37,6 +38,14 @@ const globalErrorHandler: ErrorRequestHandler = (
     errorMessages = simplifiedError.errorMessages;
   } else if (error?.name === 'CastError') {
     const simplifiedError = handleCastError(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorMessages = simplifiedError.errorMessages;
+  } else if (
+    error?.name === 'JsonWebTokenError' ||
+    error?.name === 'TokenExpiredError'
+  ) {
+    const simplifiedError = handleJWTError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
