@@ -66,55 +66,45 @@
     .btn:hover {
       background-color: #44195d;
     }
-     /* Social icons */
-   .social-icons {
-      margin-top: 30px;
-     text-align: center;
-    }
-    .social-icons a {
-      display: inline-block;
-      margin: 0 10px;
-      font-size: 20px;
-      color: #333;
-      text-decoration: none;
-    }
-    .fa-linkedin {
-      color: #0A66C2;
-    }
-    .fa-facebook {
-      color: #0866FF;
-    }
-    .fa-github {
-      color: #010409;
-    }
-    .fa-twitter {
-      color: #1D9BF0;
-    }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="banner"> 
-      <h1>Welcome to Jobster</h1>
-    </div>
-    <h2>Confirm Your Account</h2>
-    <p>Hi <%= name %>,</p>
-    <p>Welcome to Jobster! We're thrilled to have you on board. </br>
-      To get started, please click the button below to confirm your email address:</p>
-    <a href="<%= confirmationURL %>" class="btn" style="color: #fff;">Confirm Account</a>
-    <p>If the button above doesn't work, you can also confirm your account by copying and pasting the following link into your browser:</p>
-    <a href="<%= confirmationURL %>" style="color: #691f74;"><%= confirmationURL %></a>
-    <p>Thank you for choosing Jobster. </br> If you have any questions, feel free to contact us at support@jobster.com</p>
-
- <!-- Social icons -->
-    <div class="social-icons">
-      <a href="https://www.linkedin.com/" target="_blank"><i class="fa fa-linkedin"></i></a>
-      <a href="https://github.com/" target="_blank"><i class="fa fa-github"></i></a>
-      <a href="https://www.facebook.com/" target="_blank"><i class="fa fa-facebook"></i></a>
-      <a href="https://twitter.com/" target="_blank"><i class="fa fa-twitter"></i></a>
-    </div>
-  </div>
-
-<script src="https://kit.fontawesome.com/your-fontawesome-kit-id.js" crossorigin="anonymous"></script>
+<body style="font-family: 'Poppins', Arial, sans-serif; background-color: #f0e9f1; padding: 40px;">
+  <table cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td align="center">
+        <table cellpadding="0" cellspacing="0" width="600" style="background-color: #fff; border-radius: 16px; box-shadow: 0 0 10px rgba(0,0,0,0.1); border: #333;">
+          <tr>
+            <td>
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td style="background-color: #44195d; text-align: center; padding: 20px; color: white; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                    <h1>Welcome to Jobster</h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 40px;">
+                    <h2 style="color: #333;">Confirm Your Account</h2>
+                    <p>Hi <%= name %>,</p>
+                    <p>Welcome to Jobster! We're thrilled to have you on board.</br>
+                    To get started, please click the button below to confirm your email address:</p>
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="margin: 20px 0; text-align: center;">
+                          <a href="<%= confirmationURL %>" class="btn" style="color: #fff;">Confirm Account</a>
+                        </td>
+                      </tr>
+                    </table>
+                    <p>If the button above doesn't work, you can also confirm your account by copying and pasting the following link into your browser:</p>
+                    <p><a href="<%= confirmationURL %>" style="color: #691f74;"><%= confirmationURL %></a></p>
+                    <p>Thank you for choosing Jobster.</br>If you have any questions, feel free to contact us at <a href="mailto:support@jobster.com" style="color: #691f74;">support@jobster.com</a></p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>

@@ -16,6 +16,7 @@ const sendResetPasswordEmail = async (
   );
   const emailBody = await ejs.renderFile(templatePath, {
     name,
+    email,
     passwordResetURL,
   });
 
@@ -29,12 +30,16 @@ const sendResetPasswordEmail = async (
 };
 
 const sendConfirmResetPasswordEmail = async (email: string, name: string) => {
+  const clientURL = config.CLIENT_URL;
   const templatePath = path.join(
     __dirname,
     '../../../views/templates/success-reset-password.ejs'
   );
-
-  const emailBody = await ejs.renderFile(templatePath, { name });
+  const emailBody = await ejs.renderFile(templatePath, {
+    name,
+    email,
+    clientURL,
+  });
 
   const mailInfo = {
     to: email,
