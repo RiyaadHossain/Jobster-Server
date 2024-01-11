@@ -6,6 +6,7 @@ import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
 import { searchAndFilterAbleFields } from './constant';
 import { CandidateServices } from './service';
+import { IUploadFile } from '@/interfaces/file';
 
 const getAllCandidates: RequestHandler = catchAsync(async (req, res) => {
   const pagination = pick(req.query, paginationFields);
@@ -50,8 +51,22 @@ const editProfile: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const uploadResume: RequestHandler = catchAsync(async (req, res) => {
+  const userId = req.user?.userId;
+  const file = req.file as IUploadFile;
+  const result = await CandidateServices.uploadResume(userId, file);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Resume uploaded successfully',
+    data: result,
+  });
+});
+
 export const CandidateControllers = {
   getAllCandidates,
   getCandidate,
   editProfile,
+  uploadResume,
 };

@@ -13,6 +13,9 @@ import { NotificationServices } from '../notiifcaiton/service';
 import { INotification } from '../notiifcaiton/interface';
 import { ENUM_NOFICATION_TYPE } from '@/enums/notification';
 import { ENUM_USER_ROLE } from '@/enums/user';
+import { IUploadFile } from '@/interfaces/file';
+import { FileUploader } from '@/helpers/fileUploader';
+import { ENUM_FILE_TYPE } from '@/enums/file';
 
 const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -110,8 +113,35 @@ const editProfile = async (userId: string, payload: ICandidate) => {
   return updatedData;
 };
 
+const uploadResume = async (userId: string, file: IUploadFile) => {
+  if (!file)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Must be uploaded a resume');
+
+  const uploadedResume = await FileUploader.uploadToCloudinary(
+    file,
+    ENUM_FILE_TYPE.PDF
+  );
+
+  // 1. Check Candidate account exist
+  const candidate = await Candidate.findOne({ id: userId });
+
+  if (!candidate)
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "Candidate account doesn't exist!"
+    );
+
+  // 2. Save fileName and fileURL
+  candidate.resume = {
+    fileName: file.originalname,
+    fileURL: uploadedResume.secure_url,
+  };
+  await candidate.save();
+};
+
 export const CandidateServices = {
   getAllCandidates,
   getCandidate,
   editProfile,
+  uploadResume,
 };

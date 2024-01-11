@@ -4,6 +4,7 @@ import validateRequest from '@middlewares/validateRequest';
 import express from 'express';
 import { CandidateControllers } from './controller';
 import { CandidateValidations } from './validation';
+import { FileUploader } from '@/helpers/fileUploader';
 const router = express.Router();
 
 router.get('/', CandidateControllers.getAllCandidates);
@@ -26,6 +27,13 @@ router.patch(
   auth([ENUM_USER_ROLE.CANDIDATE]),
   validateRequest(CandidateValidations.editProfile),
   CandidateControllers.editProfile
+);
+
+router.post(
+  '/upload-resume',
+  auth([ENUM_USER_ROLE.CANDIDATE]),
+  FileUploader.upload.single('resume'),
+  CandidateControllers.uploadResume
 );
 
 export const CandidateRoutes = router;

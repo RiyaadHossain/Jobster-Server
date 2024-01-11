@@ -3,6 +3,7 @@ import sendResponse from '@/shared/sendResponse';
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
 import { UserServices } from './service';
+import { IUploadFile } from '@/interfaces/file';
 
 const signUp: RequestHandler = catchAsync(async (req, res) => {
   const user = req.body.user;
@@ -13,8 +14,8 @@ const signUp: RequestHandler = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Please check your email to confirm sign up.",
-    data: result
+    message: 'Please check your email to confirm sign up.',
+    data: result,
   });
 });
 
@@ -23,16 +24,25 @@ const confirmAccount: RequestHandler = catchAsync(async (req, res) => {
   const name = req.params.name;
   const result = await UserServices.confirmAccount(name, token);
 
-  let message = 'Something went wrong, please try later.';
-  if (result)
-    message = 'Congrantulations, User signed up successfully. Please sign in.';
-
-  // TODO: Show a web page to user
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message,
+    message: 'Account is verified successfully',
+    data: result,
   });
 });
 
-export const UserControllers = { signUp, confirmAccount };
+const uploadImage: RequestHandler = catchAsync(async (req, res) => {
+  const userId = req.user.userId;
+  const file = req.file as IUploadFile;
+  const filedName = req.params.field;
+  await UserServices.uploadImage(userId, filedName, file);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Image uploaded successfully',
+  });
+});
+
+export const UserControllers = { signUp, confirmAccount, uploadImage };

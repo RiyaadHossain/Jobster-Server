@@ -6,7 +6,10 @@ import Company from '../company/model';
 import { IUser } from './interface';
 import User from './model';
 import { UserUtils } from './utils';
-// import { emailSender } from '@/helpers/emailSender';
+import { IUploadFile } from '@/interfaces/file';
+import { FileUploader } from '@/helpers/fileUploader';
+import { ENUM_FILE_TYPE } from '@/enums/file';
+import { imageFields } from './constant';
 
 const signUp = async (payload: IUser, name: string, URL: string) => {
   // 1. Is user exist
@@ -41,7 +44,6 @@ const signUp = async (payload: IUser, name: string, URL: string) => {
 };
 
 const confirmAccount = async (name: string, token: string) => {
-
   // 1. Check user existence
   const user = await User.findOne({ confirmationToken: token });
   if (!user)
@@ -83,4 +85,39 @@ const confirmAccount = async (name: string, token: string) => {
   return user;
 };
 
-export const UserServices = { signUp, confirmAccount };
+const uploadImage = async (
+  userId: string,
+  filedName: string,
+  file: IUploadFile
+) => {
+  if (!imageFields.includes(filedName))
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Field name must be avatar/logo/banner'
+    );
+
+  // 1. Check user account
+  const user = await User.findOne({ id: userId });
+  if (!user)
+    throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist!");
+
+  // 2. Upload Image
+  const uploadImage = await FileUploader.uploadToCloudinary(
+    file,
+    ENUM_FILE_TYPE.PNG
+  );
+
+  // 3. Save image url
+  if (user.role === ENUM_USER_ROLE.CANDIDATE)
+    await Candidate.findOneAndUpdate(
+      { id: userId },
+      { [filedName]: uploadImage.secure_url }
+    );
+  else
+    await Company.findOneAndUpdate(
+      { id: userId },
+      { [filedName]: uploadImage.secure_url }
+    );
+};
+
+export const UserServices = { signUp, confirmAccount, uploadImage };

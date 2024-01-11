@@ -12,6 +12,10 @@ const candidateSchema = new Schema<ICandidate>({
   location: { type: String },
   phoneNumber: { type: String },
   skills: [{ type: String }],
+  resume: {
+    fileName: { type: String },
+    fileURL: { type: String },
+  },
   workExperience: [
     {
       timePeriod: String,
