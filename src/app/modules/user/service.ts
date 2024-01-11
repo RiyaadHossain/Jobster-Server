@@ -10,6 +10,7 @@ import { IUploadFile } from '@/interfaces/file';
 import { FileUploader } from '@/helpers/fileUploader';
 import { ENUM_FILE_TYPE } from '@/enums/file';
 import { imageFields } from './constant';
+import { unlinkSync } from 'fs';
 
 const signUp = async (payload: IUser, name: string, URL: string) => {
   // 1. Is user exist
@@ -90,24 +91,29 @@ const uploadImage = async (
   filedName: string,
   file: IUploadFile
 ) => {
-  if (!imageFields.includes(filedName))
+  // 1. Validate image field name
+  if (!imageFields.includes(filedName)) {
+    unlinkSync(file.path);
     throw new ApiError(
       httpStatus.BAD_REQUEST,
       'Field name must be avatar/logo/banner'
     );
+  }
 
-  // 1. Check user account
+  // 2. Check user account
   const user = await User.findOne({ id: userId });
-  if (!user)
+  if (!user) {
+    unlinkSync(file.path);
     throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist!");
+  }
 
-  // 2. Upload Image
+  // 3. Upload Image
   const uploadImage = await FileUploader.uploadToCloudinary(
     file,
     ENUM_FILE_TYPE.PNG
   );
 
-  // 3. Save image url
+  // 4. Save image url
   if (user.role === ENUM_USER_ROLE.CANDIDATE)
     await Candidate.findOneAndUpdate(
       { id: userId },
