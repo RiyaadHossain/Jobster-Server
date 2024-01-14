@@ -17,7 +17,13 @@ router.get(
 );
 
 router.get(
-  '/application-stat',
+  '/stat/profile-view',
+  auth([ENUM_USER_ROLE.CANDIDATE, ENUM_USER_ROLE.COMPANY]),
+  DashboardControllers.profileViewStat
+);
+
+router.get(
+  '/stat/application',
   auth([ENUM_USER_ROLE.CANDIDATE, ENUM_USER_ROLE.COMPANY]),
   DashboardControllers.applicationStat
 );

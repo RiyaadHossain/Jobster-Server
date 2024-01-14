@@ -1,7 +1,6 @@
 export type ICandidate = {
   id: string;
   name: string;
-  profileView: number;
   avatar: string;
   banner: string;
   phoneNumber: string;

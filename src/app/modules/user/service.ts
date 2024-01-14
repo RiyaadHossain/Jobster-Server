@@ -46,7 +46,7 @@ const signUp = async (payload: IUser, name: string, URL: string) => {
 
 const confirmAccount = async (name: string, token: string) => {
   // 1. Check user existence
-  const user = await User.findOne({ confirmationToken: token });
+  const user = await User.findOne({ confirmationToken: token }).select('+confirmationToken +confirmationTokenExpires');
   if (!user)
     throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist");
 

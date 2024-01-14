@@ -16,7 +16,7 @@ router.post(
 router.get('/confirm-account/:name/:token', UserControllers.confirmAccount);
 
 router.post(
-  '/upload-image/:field',
+  '/upload-image',
   auth([ENUM_USER_ROLE.COMPANY, ENUM_USER_ROLE.CANDIDATE]),
   FileUploader.upload.single('image'),
   UserControllers.uploadImage

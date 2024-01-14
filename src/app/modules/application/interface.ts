@@ -5,4 +5,5 @@ export type IApplication = {
   job: Types.ObjectId;
   candidate: Types.ObjectId;
   status: ENUM_APPLICATION_STATUS;
+  createdAt: Date
 };

@@ -9,14 +9,12 @@ const auth =
   (requiredRoles: string[], optional?: boolean) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // If optional auth route
-      if (optional) {
+      // Authenticate user access
+      const token = req.headers.authorization as string;
+      if (optional && !token) {
         next();
         return;
       }
-
-      // Authenticate user access
-      const token = req.headers.authorization as string;
       if (!token) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
       }

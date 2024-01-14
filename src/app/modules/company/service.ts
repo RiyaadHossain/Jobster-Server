@@ -15,6 +15,7 @@ import { INotification } from '../notiifcaiton/interface';
 import { ENUM_USER_ROLE } from '@/enums/user';
 import { NotificationServices } from '../notiifcaiton/service';
 import { ENUM_NOFICATION_TYPE } from '@/enums/notification';
+import ProfileView from '../dashboard/model';
 
 const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -66,8 +67,11 @@ const getCompany = async (id: string, authUser: JwtPayload | null) => {
   const company = await Company.findById(id);
 
   if (authUser && company) {
-    company.profileView++;
-    company.save();
+    await ProfileView.create({
+      userId: company._id,
+      viewedBy: authUser.userId,
+    });
+
     // Send notification to company
     const user = await User.getRoleSpecificDetails(authUser.userId);
 

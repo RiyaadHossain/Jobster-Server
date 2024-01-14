@@ -3,7 +3,6 @@ import { ICandidate } from './interface';
 
 const candidateSchema = new Schema<ICandidate>({
   id: { type: String, required: true },
-  profileView: { type: Number, default: 0 },
   name: { type: String, required: true, minlength: 3, maxlength: 16 },
   avatar: { type: String },
   banner: { type: String },

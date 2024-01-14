@@ -16,9 +16,23 @@ const overview: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const profileViewStat: RequestHandler = catchAsync(async (req, res) => {
+  const authUser = req.user;
+  const months = Number(req.query.months);
+  const result = await DashboardServices.profileViewStat(authUser, months);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Dashboard profile view stat data retrived successfully',
+    data: result,
+  });
+});
+
 const applicationStat: RequestHandler = catchAsync(async (req, res) => {
   const authUser = req.user;
-  const result = await DashboardServices.applicationStat(authUser);
+  const months = Number(req.query.months);
+  const result = await DashboardServices.applicationStat(authUser, months);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -28,4 +42,4 @@ const applicationStat: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-export const DashboardControllers = { overview, applicationStat };
+export const DashboardControllers = { overview, profileViewStat, applicationStat };

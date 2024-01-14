@@ -26,9 +26,9 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       enum: Object.values(ENUM_USER_ACCOUNT_STATUS),
       default: ENUM_USER_ACCOUNT_STATUS.IN_ACTIVE,
     },
-    confirmationToken: { type: String },
-    confirmationTokenExpires: { type: Date },
-    resetPasswordToken: { type: String },
+    confirmationToken: { type: String, select: 0 },
+    confirmationTokenExpires: { type: Date, select: 0 },
+    resetPasswordToken: { type: String, select: 0 },
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );

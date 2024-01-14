@@ -128,7 +128,7 @@ const resetPassword = async (resetCredential: IResetCredential) => {
 
   // 2. Check user token existence
   const userId = decoded.userId;
-  const user = await User.findOne({ id: userId });
+  const user = await User.findOne({ id: userId }).select('+resetPasswordToken');
   if (!user?.resetPasswordToken)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Token');
 

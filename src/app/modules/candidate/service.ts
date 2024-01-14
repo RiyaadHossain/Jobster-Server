@@ -16,6 +16,7 @@ import { ENUM_USER_ROLE } from '@/enums/user';
 import { IUploadFile } from '@/interfaces/file';
 import { FileUploader } from '@/helpers/fileUploader';
 import { ENUM_FILE_TYPE } from '@/enums/file';
+import ProfileView from '../dashboard/model';
 
 const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -61,11 +62,13 @@ const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
 };
 
 const getCandidate = async (id: string, authUser: JwtPayload | null) => {
-  const candidate = await Candidate.findById(id).select('_id name');
+  const candidate = await Candidate.findById(id)
 
   if (authUser && candidate) {
-    candidate.profileView++;
-    candidate.save();
+    await ProfileView.create({
+      userId: candidate.id,
+      viewedBy: authUser.userId,
+    });
 
     // Send notification to candidate
     const user = await User.getRoleSpecificDetails(authUser.userId);
