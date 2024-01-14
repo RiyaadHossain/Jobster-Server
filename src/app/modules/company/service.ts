@@ -61,17 +61,24 @@ const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
 };
 
 const getCompany = async (id: string, authUser: JwtPayload | null) => {
-  if (!authUser)
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User credential is missing');
-
   const company = await Company.findById(id);
 
-  if (authUser && company) {
+  const currentMin = new Date();
+  const oneMinEarlier = new Date(
+    currentMin.setMinutes(currentMin.getMinutes() - 2)
+  );
+  const viewed = await ProfileView.findOne({
+    userId: company?._id,
+    viewedBy: authUser?.userId,
+    viewedAt: { $gte: oneMinEarlier },
+  });
+  
+  if (!viewed && company && authUser) {
+    console.log(viewed);
     await ProfileView.create({
       userId: company._id,
       viewedBy: authUser.userId,
     });
-
     // Send notification to company
     const user = await User.getRoleSpecificDetails(authUser.userId);
 
@@ -138,7 +145,6 @@ const myJobs = async (userId: string) => {
 
   return jobsWithApplications;
 };
-
 
 const appliedCandidates = async (userId: string) => {
   const company = await Company.findOne({ id: userId });

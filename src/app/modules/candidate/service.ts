@@ -62,9 +62,19 @@ const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
 };
 
 const getCandidate = async (id: string, authUser: JwtPayload | null) => {
-  const candidate = await Candidate.findById(id)
+  const candidate = await Candidate.findById(id);
 
-  if (authUser && candidate) {
+  const currentMin = new Date();
+  const oneMinEarlier = new Date(
+    currentMin.setMinutes(currentMin.getMinutes() - 2)
+  );
+  const viewed = await ProfileView.findOne({
+    userId: candidate?._id,
+    viewedBy: authUser?.userId,
+    viewedAt: { $gte: oneMinEarlier },
+  });
+
+  if (!viewed && authUser && candidate) {
     await ProfileView.create({
       userId: candidate.id,
       viewedBy: authUser.userId,
