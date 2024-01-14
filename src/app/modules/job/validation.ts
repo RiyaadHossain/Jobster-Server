@@ -20,7 +20,8 @@ const createJob = z.object({
     skills: z.string({ required_error: 'Skills is Required' }).array(),
     requirements: z
       .string({ required_error: 'Requirements is Required' })
-      .array(),
+      .array()
+      .length(2, 'Add at least 2 requirements'),
     responsibilities: z
       .string({ required_error: 'Responsibilites is Required' })
       .array(),

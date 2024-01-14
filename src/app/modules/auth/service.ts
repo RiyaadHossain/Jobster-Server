@@ -7,6 +7,7 @@ import User from '../user/model';
 import { IResetCredential, IUserCredential } from './interface';
 import { AuthUtils } from './utils';
 import bcrypt from 'bcrypt';
+import { ENUM_USER_ACCOUNT_STATUS } from '@/enums/user';
 
 const signIn = async (payload: IUserCredential) => {
   const { email, password } = payload;
@@ -16,6 +17,9 @@ const signIn = async (payload: IUserCredential) => {
   if (!userExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User doesn't exist!");
   }
+
+  if (userExist.status !== ENUM_USER_ACCOUNT_STATUS.ACTIVE)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User account is not active');
 
   // Check Password
   const isPassMatched = await User.isPasswordMatched(

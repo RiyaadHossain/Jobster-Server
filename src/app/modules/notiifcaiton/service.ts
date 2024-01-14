@@ -36,7 +36,9 @@ const getAllNotifications = async (authUser: JwtPayload | null) => {
   if (!user)
     throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist");
 
-  const data = await Notification.find({ 'to._id': user._id });
+  const data = await Notification.find({ 'to._id': user._id }).sort({
+    createdAt: -1,
+  });
   return data;
 };
 

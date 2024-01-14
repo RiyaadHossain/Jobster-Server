@@ -30,7 +30,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     confirmationTokenExpires: { type: Date, select: 0 },
     resetPasswordToken: { type: String, select: 0 },
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true }
 );
 
 // To Hash password

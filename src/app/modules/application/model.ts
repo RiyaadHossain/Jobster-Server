@@ -16,7 +16,7 @@ const applicationSchema = new Schema<IApplication>(
       default: ENUM_APPLICATION_STATUS.PENDING,
     },
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true }
 );
 
 const Application = model<IApplication>('Application', applicationSchema);

@@ -7,7 +7,9 @@ import sendResponse from '@/shared/sendResponse';
 
 const signIn: RequestHandler = catchAsync(async (req, res) => {
   const userCredential = req.body;
-  const result = await AuthServices.signIn(userCredential);
+  const { refreshToken, accessToken } = await AuthServices.signIn(
+    userCredential
+  );
 
   // Set Cookie
   const cookieOptions = {
@@ -15,13 +17,13 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
     httpOnly: true,
   };
 
-  res.cookie('refreshToken', result.refreshToken, cookieOptions);
+  res.cookie('refreshToken', refreshToken, cookieOptions);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User signed in successfully',
-    data: result,
+    data: { accessToken },
   });
 });
 

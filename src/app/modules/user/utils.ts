@@ -23,13 +23,26 @@ const generateId = async (role: ENUM_USER_ROLE) => {
   return generatedId;
 };
 
-// const hashPassword = async (plainPassword: string) => {
-//   const hashedPass = await bcrypt.hash(
-//     plainPassword,
-//     Number(config.BCRYPT_SALT_ROUNDS)
-//   );
-//   return hashedPass;
-// };
+const validateImageField = (userRole: ENUM_USER_ROLE, filedName: string) => {
+  let isValid = true;
+  let error = '';
+
+  if (userRole === ENUM_USER_ROLE.CANDIDATE) {
+    if (filedName !== 'avatar' && filedName !== 'banner') {
+      isValid = false;
+      error = 'Field name must be avatar/banner';
+    }
+  }
+
+  if (userRole === ENUM_USER_ROLE.COMPANY) {
+    if (filedName !== 'logo' && filedName !== 'banner') {
+      isValid = false;
+      error = 'Field name must be logo/banner';
+    }
+  }
+
+  return { isValid, error };
+};
 
 const sendConfirmationEmail = async ({
   email,
@@ -57,4 +70,8 @@ const sendConfirmationEmail = async ({
   await emailSender(mailInfo);
 };
 
-export const UserUtils = { generateId,  sendConfirmationEmail };
+export const UserUtils = {
+  generateId,
+  validateImageField,
+  sendConfirmationEmail,
+};

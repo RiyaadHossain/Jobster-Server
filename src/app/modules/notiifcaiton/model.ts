@@ -23,7 +23,7 @@ const notificationSchema = new Schema<INotification>(
     job: { _id: { type: Schema.Types.ObjectId, ref: 'Job' }, title: String },
     isRead: { type: Boolean, default: false },
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true }
 );
 
 const Notification = model<INotification>('Notification', notificationSchema);

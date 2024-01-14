@@ -140,12 +140,22 @@ const remove = async (id: string, userId: string) => {
   if (!application)
     throw new ApiError(httpStatus.NOT_FOUND, "Job application doesn't exist");
 
+
   const candidate = await ApplicationUtils.isCandidateExist(userId);
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not exist');
 
   if (!application.candidate.equals(candidate._id))
-    throw new ApiError(httpStatus.NOT_FOUND, 'This application is not yours');
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "You can't delete this application"
+    );
+  
+  if (application.status !== ENUM_APPLICATION_STATUS.PENDING)
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      `Application is already ${application.status}`
+    );
 
   const data = await Application.findByIdAndDelete(id);
   return data;

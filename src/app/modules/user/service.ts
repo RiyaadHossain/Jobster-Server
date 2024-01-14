@@ -9,8 +9,8 @@ import { UserUtils } from './utils';
 import { IUploadFile } from '@/interfaces/file';
 import { FileUploader } from '@/helpers/fileUploader';
 import { ENUM_FILE_TYPE } from '@/enums/file';
-import { imageFields } from './constant';
 import { unlinkSync } from 'fs';
+import { JwtPayload } from 'jsonwebtoken';
 
 const signUp = async (payload: IUser, name: string, URL: string) => {
   // 1. Is user exist
@@ -40,15 +40,14 @@ const signUp = async (payload: IUser, name: string, URL: string) => {
 
   // 5. Finally Save user doc
   await user.save();
-
-  return user;
 };
 
 const confirmAccount = async (name: string, token: string) => {
   // 1. Check user existence
-  const user = await User.findOne({ confirmationToken: token }).select('+confirmationToken +confirmationTokenExpires');
-  if (!user)
-    throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist");
+  const user = await User.findOne({ confirmationToken: token }).select(
+    '+confirmationToken +confirmationTokenExpires'
+  );
+  if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'Invalid Token');
 
   // 2. Check Token Expire Date
   const expired = new Date() > (user.confirmationTokenExpires as Date);
@@ -87,17 +86,17 @@ const confirmAccount = async (name: string, token: string) => {
 };
 
 const uploadImage = async (
-  userId: string,
+  authUser: JwtPayload,
   filedName: string,
   file: IUploadFile
 ) => {
+  const { userId, role } = authUser;
+
   // 1. Validate image field name
-  if (!imageFields.includes(filedName)) {
+  const { isValid, error } = UserUtils.validateImageField(role, filedName);
+  if (!isValid) {
     unlinkSync(file.path);
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      'Field name must be avatar/logo/banner'
-    );
+    throw new ApiError(httpStatus.BAD_REQUEST, error);
   }
 
   // 2. Check user account

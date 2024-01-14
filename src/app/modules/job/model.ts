@@ -25,7 +25,7 @@ const jobSchema = new Schema<IJob>(
     requirements: [{ type: String, required: true }],
     responsibilities: [{ type: String, required: true }],
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true }
 );
 
 jobSchema.statics.isJobExist = async function (id: string) {

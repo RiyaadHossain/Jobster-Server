@@ -139,6 +139,7 @@ const myJobs = async (userId: string) => {
   return jobsWithApplications;
 };
 
+
 const appliedCandidates = async (userId: string) => {
   const company = await Company.findOne({ id: userId });
   if (!company)

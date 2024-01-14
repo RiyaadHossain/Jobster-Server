@@ -53,6 +53,7 @@ const getAllJobs = async (pagination: IPagination, filters: IFilters) => {
   const whereCondition = andConditions.length ? { $and: andConditions } : {};
 
   const Jobs = await Job.find(whereCondition)
+    .populate({ path: 'company', select: '_id name' })
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
@@ -82,7 +83,7 @@ const updateJob = async (id: string, payload: IJob, userId: string) => {
   if (!(await Job.isJobCreator(id, companyId)))
     throw new ApiError(
       httpStatus.NOT_FOUND,
-      "You're not the creator of this job"
+      "You didn't posted this job"
     );
 
   const data = await Job.findByIdAndUpdate(id, payload, {
@@ -105,7 +106,7 @@ const deleteJob = async (id: string, userId: string) => {
   if (!(await Job.isJobCreator(id, companyId)))
     throw new ApiError(
       httpStatus.NOT_FOUND,
-      "You're not the creator of this job"
+      "You didn't posted this job"
     );
 
   const data = await Job.findByIdAndDelete(id);

@@ -33,10 +33,10 @@ const confirmAccount: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const uploadImage: RequestHandler = catchAsync(async (req, res) => {
-  const userId = req.user.userId;
+  const authUser = req.user;
   const file = req.file as IUploadFile;
   const filedName = req.body.field;
-  await UserServices.uploadImage(userId, filedName, file);
+  await UserServices.uploadImage(authUser, filedName, file);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
