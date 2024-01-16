@@ -4,10 +4,15 @@ import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routes from './app/routes';
 import cookieParser from 'cookie-parser';
+import config from './config';
 
 const app: Application = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: config.CLIENT_URL,
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 //parser

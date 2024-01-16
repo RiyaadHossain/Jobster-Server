@@ -74,7 +74,6 @@ const getCompany = async (id: string, authUser: JwtPayload | null) => {
   });
   
   if (!viewed && company && authUser) {
-    console.log(viewed);
     await ProfileView.create({
       userId: company._id,
       viewedBy: authUser.userId,

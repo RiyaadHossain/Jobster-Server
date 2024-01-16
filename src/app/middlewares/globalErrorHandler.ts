@@ -23,6 +23,7 @@ const globalErrorHandler: ErrorRequestHandler = (
     ? console.log(`🐱 globalErrorHandler ~~`, { error })
     : console.log(`🐱 globalErrorHandler ~~`, error);
 
+  let type = '';
   let statusCode = 500;
   let message = 'Something went wrong !';
   let errorMessages: IGenericErrorMessage[] = [];
@@ -53,6 +54,7 @@ const globalErrorHandler: ErrorRequestHandler = (
     const simplifiedError = handleJWTError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
+    type = simplifiedError.type;
     errorMessages = simplifiedError.errorMessages;
   } else if (error instanceof ApiError) {
     statusCode = error?.statusCode;
@@ -79,6 +81,7 @@ const globalErrorHandler: ErrorRequestHandler = (
 
   res.status(statusCode).json({
     success: false,
+    type,
     message,
     errorMessages,
     stack: config.ENV !== 'production' ? error?.stack : undefined,

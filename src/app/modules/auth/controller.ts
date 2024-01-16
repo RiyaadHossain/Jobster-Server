@@ -1,5 +1,5 @@
 import config from '@config';
-import { RequestHandler } from 'express';
+import { CookieOptions, RequestHandler } from 'express';
 import httpStatus from 'http-status';
 import { AuthServices } from './service';
 import catchAsync from '@/shared/catchAsync';
@@ -12,9 +12,10 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
   );
 
   // Set Cookie
-  const cookieOptions = {
+  const cookieOptions: CookieOptions = {
     secure: config.ENV === 'production',
     httpOnly: true,
+    sameSite: 'none',
   };
 
   res.cookie('refreshToken', refreshToken, cookieOptions);
@@ -23,12 +24,13 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User signed in successfully',
-    data: { accessToken },
+    data: { accessToken, refreshToken },
   });
 });
 
 const accessToken: RequestHandler = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
+
   const result = await AuthServices.accessToken(refreshToken);
 
   sendResponse(res, {

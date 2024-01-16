@@ -33,7 +33,8 @@ const uploadToCloudinary = async (
   file: IUploadFile,
   fileType: ENUM_FILE_TYPE
 ) => {
-  if (file.mimetype !== fileType) {
+  
+  if (!file?.mimetype.includes(fileType)) {
     unlinkSync(file.path);
     throw new ApiError(httpStatus.BAD_REQUEST, `File type must be ${fileType}`);
   }

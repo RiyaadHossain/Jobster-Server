@@ -12,6 +12,22 @@ import { ENUM_FILE_TYPE } from '@/enums/file';
 import { unlinkSync } from 'fs';
 import { JwtPayload } from 'jsonwebtoken';
 
+const me = async (id: string) => {
+  let user: { [key: string]: unknown } | null = await User.findOne({
+    id,
+  });
+
+  if (!user)
+    throw new ApiError(httpStatus.BAD_REQUEST, "User account doesn't exist");
+
+  user = await User.getRoleSpecificDetails(id);
+
+  if (!user)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User account is inactive');
+
+  return user;
+};
+
 const signUp = async (payload: IUser, name: string, URL: string) => {
   // 1. Is user exist
   const isExist = await User.findOne({
@@ -92,6 +108,8 @@ const uploadImage = async (
 ) => {
   const { userId, role } = authUser;
 
+  if (!file) throw new ApiError(httpStatus.BAD_REQUEST, 'Must upload an Image');
+
   // 1. Validate image field name
   const { isValid, error } = UserUtils.validateImageField(role, filedName);
   if (!isValid) {
@@ -109,20 +127,35 @@ const uploadImage = async (
   // 3. Upload Image
   const uploadImage = await FileUploader.uploadToCloudinary(
     file,
-    ENUM_FILE_TYPE.PNG
+    ENUM_FILE_TYPE.IMAGE
   );
+
+  const imageUrl = uploadImage.secure_url;
 
   // 4. Save image url
   if (user.role === ENUM_USER_ROLE.CANDIDATE)
-    await Candidate.findOneAndUpdate(
-      { id: userId },
-      { [filedName]: uploadImage.secure_url }
-    );
+    await Candidate.findOneAndUpdate({ id: userId }, { [filedName]: imageUrl });
   else
-    await Company.findOneAndUpdate(
-      { id: userId },
-      { [filedName]: uploadImage.secure_url }
-    );
+    await Company.findOneAndUpdate({ id: userId }, { [filedName]: imageUrl });
+
+  return { imageUrl };
 };
 
-export const UserServices = { signUp, confirmAccount, uploadImage };
+const getImageUrl = async (id: string, fieldName: string) => {
+  const user = await User.getRoleSpecificDetails(id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist!");
+  }
+
+  // @ts-ignore
+  const imageUrl = user[fieldName] || null;
+  return { imageUrl };
+};
+
+export const UserServices = {
+  me,
+  signUp,
+  confirmAccount,
+  uploadImage,
+  getImageUrl,
+};
