@@ -19,7 +19,21 @@ const add: RequestHandler = catchAsync(async (req, res) => {
 
 const myList: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.user?.userId;
-  const result = await WishlistServices.myList(userId);
+  const searchTerm = req.query.searchTerm as string;
+  const result = await WishlistServices.myList(userId, searchTerm);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: 'Wishlist items retrived successfully',
+    data: result,
+  });
+});
+
+const alreadyAdded: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const userId = req.user?.userId;
+  const result = await WishlistServices.alreadyAdded(id, userId);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -42,4 +56,4 @@ const remove: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-export const WishlistControllers = { add, myList, remove };
+export const WishlistControllers = { add, myList, alreadyAdded, remove };

@@ -6,9 +6,10 @@ export type ICandidate = {
   phoneNumber: string;
   location: string;
   industry: string;
+  title: string;
   about: string;
   skills: string[];
-  resume: { fileName: string; fileURL: string };
+  resume?: { fileName: string; fileURL: string };
   workExperience: {
     timePeriod: string;
     position: string;

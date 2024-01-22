@@ -9,14 +9,10 @@ import User from '../user/model';
 import { filterAbleFields } from './constant';
 import { ICandidate } from './interface';
 import Candidate from './model';
-import { NotificationServices } from '../notiifcaiton/service';
-import { INotification } from '../notiifcaiton/interface';
-import { ENUM_NOFICATION_TYPE } from '@/enums/notification';
-import { ENUM_USER_ROLE } from '@/enums/user';
 import { IUploadFile } from '@/interfaces/file';
 import { FileUploader } from '@/helpers/fileUploader';
 import { ENUM_FILE_TYPE } from '@/enums/file';
-import ProfileView from '../dashboard/model';
+import { CandidateUtils } from './utils';
 
 const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -61,48 +57,21 @@ const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
   return { meta, data: Candidates };
 };
 
-const getCandidate = async (id: string, authUser: JwtPayload | null) => {
+const getCandidate = async (id: string, authUser: JwtPayload) => {
   const candidate = await Candidate.findById(id);
 
-  const currentMin = new Date();
-  const oneMinEarlier = new Date(
-    currentMin.setMinutes(currentMin.getMinutes() - 2)
-  );
-  const viewed = await ProfileView.findOne({
-    userId: candidate?._id,
-    viewedBy: authUser?.userId,
-    viewedAt: { $gte: oneMinEarlier },
-  });
+  if (!candidate)
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Candidate account doesn't exist"
+    );
 
-  if (!viewed && authUser && candidate) {
-    await ProfileView.create({
-      userId: candidate.id,
-      viewedBy: authUser.userId,
-    });
+  const email = (await User.findOne({ id: candidate.id }))?.email;
 
-    // Send notification to candidate
-    const user = await User.getRoleSpecificDetails(authUser.userId);
+  CandidateUtils.countProfileView(authUser, candidate);
 
-    if (!user)
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Notification sender account doesn't exist"
-      );
-
-    const notificationPayload: INotification = {
-      type: ENUM_NOFICATION_TYPE.APPLY,
-      from: { _id: user._id, name: user.name, role: authUser.role },
-      to: {
-        _id: candidate._id,
-        name: candidate.name,
-        role: ENUM_USER_ROLE.CANDIDATE,
-      },
-    };
-
-    NotificationServices.createNotification(notificationPayload);
-  }
-
-  return candidate;
+  // @ts-ignore
+  return { ...candidate._doc, email };
 };
 
 const editProfile = async (userId: string, payload: ICandidate) => {
@@ -152,9 +121,23 @@ const uploadResume = async (userId: string, file: IUploadFile) => {
   await candidate.save();
 };
 
+const deleteResume = async (userId: string) => {
+  const candidate = await Candidate.findOne({ id: userId });
+
+  if (!candidate)
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "Candidate account doesn't exist!"
+    );
+
+  candidate.resume = undefined;
+  await candidate.save();
+};
+
 export const CandidateServices = {
   getAllCandidates,
   getCandidate,
   editProfile,
   uploadResume,
+  deleteResume,
 };

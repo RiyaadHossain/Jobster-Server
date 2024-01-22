@@ -1,5 +1,5 @@
 import ApiError from '@/errors/ApiError';
-import { IApplication } from './interface';
+import { IApplication, IApplicationPopulated } from './interface';
 import { ApplicationUtils } from './utils';
 import httpStatus from 'http-status';
 import Application from './model';
@@ -11,6 +11,7 @@ import { ENUM_USER_ROLE } from '@/enums/user';
 import { INotification } from '../notiifcaiton/interface';
 import Candidate from '../candidate/model';
 import Job from '../job/model';
+import { ISearch } from '@/interfaces/common';
 
 const apply = async (payload: IApplication, userId: string) => {
   const job = await Job.findById(payload.job);
@@ -53,16 +54,34 @@ const apply = async (payload: IApplication, userId: string) => {
   return data;
 };
 
-const myApplications = async (userId: string) => {
+const myApplications = async (userId: string, searchObj: ISearch) => {
   const candidate = await ApplicationUtils.isCandidateExist(userId);
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not exist');
 
-  const data = await Application.find({ candidate: candidate._id }).populate({
+  let { searchTerm } = searchObj;
+
+  const data: IApplicationPopulated[] = await Application.find({
+    candidate: candidate._id,
+  }).populate({
     path: 'job',
-    populate: 'company',
+    populate: { path: 'company', select: '_id name' },
+    select: '_id title company',
   });
-  return data;
+
+
+  let filteredData = data;
+  if (searchTerm)
+    filteredData = data.filter(item => {
+      searchTerm = searchTerm?.toLowerCase();
+      const jobTitle = item?.job?.title?.toLowerCase();
+      const companyName = item?.job?.company?.name?.toLowerCase();
+
+      // @ts-ignore
+      return jobTitle.includes(searchTerm) || companyName.includes(searchTerm);
+    });
+
+  return filteredData;
 };
 
 const updateStatus = async (
@@ -88,7 +107,7 @@ const updateStatus = async (
   if (application.status !== ENUM_APPLICATION_STATUS.PENDING)
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      `You've already ${application.status} the application`
+      `Already ${application.status} the application`
     );
 
   const data = await Application.findByIdAndUpdate(
@@ -140,7 +159,6 @@ const remove = async (id: string, userId: string) => {
   if (!application)
     throw new ApiError(httpStatus.NOT_FOUND, "Job application doesn't exist");
 
-
   const candidate = await ApplicationUtils.isCandidateExist(userId);
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not exist');
@@ -150,7 +168,7 @@ const remove = async (id: string, userId: string) => {
       httpStatus.NOT_FOUND,
       "You can't delete this application"
     );
-  
+
   if (application.status !== ENUM_APPLICATION_STATUS.PENDING)
     throw new ApiError(
       httpStatus.BAD_REQUEST,

@@ -6,7 +6,7 @@ const jobSchema = new Schema<IJob>(
   {
     title: { type: String, required: true, unique: true },
     company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
-    banner: { type: String },
+    location: { type: String },
     category: { type: String, required: true },
     description: { type: String, required: true },
     salaryRange: { type: String, required: true },
@@ -21,9 +21,9 @@ const jobSchema = new Schema<IJob>(
       enum: Object.values(ENUM_EMPLOYMENT_TYPE),
       required: true,
     },
-    skills: [{ type: String, required: true }],
-    requirements: [{ type: String, required: true }],
-    responsibilities: [{ type: String, required: true }],
+    skills: [{ title: { type: String } }],
+    requirements: [{ title: { type: String } }],
+    responsibilities: [{ title: { type: String } }],
   },
   { timestamps: true }
 );

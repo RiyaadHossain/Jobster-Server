@@ -5,8 +5,8 @@ const createJob = z.object({
   body: z.object({
     title: z.string({ required_error: 'Title is Required' }),
     category: z.string({ required_error: 'Category is Required' }),
-    banner: z.string({ required_error: 'Banner is Required' }),
     description: z.string({ required_error: 'Description is Required' }),
+    location: z.string({ required_error: 'Location is Required' }),
     experience: z.string({ required_error: 'Experience is Required' }),
     workLevel: z.enum([...Object.values(ENUM_WORK_LEVEL)] as [
       string,
@@ -17,14 +17,9 @@ const createJob = z.object({
       ...string[]
     ]),
     salaryRange: z.string({ required_error: 'Salary Range is Required' }),
-    skills: z.string({ required_error: 'Skills is Required' }).array(),
-    requirements: z
-      .string({ required_error: 'Requirements is Required' })
-      .array()
-      .length(2, 'Add at least 2 requirements'),
-    responsibilities: z
-      .string({ required_error: 'Responsibilites is Required' })
-      .array(),
+    skills: z.object({ title: z.string() }).array().optional(),
+    requirements: z.object({ title: z.string() }).array().optional(),
+    responsibilities: z.object({ title: z.string() }).array().optional(),
   }),
 });
 
@@ -32,15 +27,14 @@ const updateJob = z.object({
   body: z.object({
     title: z.string().optional(),
     category: z.string().optional(),
-    banner: z.string().optional(),
     description: z.string().optional(),
     experience: z.string().optional(),
     workLevel: z.string().optional(),
     employmentType: z.string().optional(),
     salaryRange: z.string().optional(),
-    skills: z.string().array().optional(),
-    requirements: z.string().array().optional(),
-    responsibilities: z.string().array().optional(),
+    skills: z.object({ title: z.string() }).array().optional(),
+    requirements: z.object({ title: z.string() }).array().optional(),
+    responsibilities: z.object({ title: z.string() }).array().optional(),
   }),
 });
 

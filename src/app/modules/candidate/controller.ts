@@ -64,9 +64,21 @@ const uploadResume: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const deleteResume: RequestHandler = catchAsync(async (req, res) => {
+  const userId = req.user?.userId;
+  await CandidateServices.deleteResume(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Resume deleted successfully',
+  });
+});
+
 export const CandidateControllers = {
   getAllCandidates,
   getCandidate,
   editProfile,
   uploadResume,
+  deleteResume,
 };

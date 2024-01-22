@@ -8,6 +8,7 @@ const candidateSchema = new Schema<ICandidate>({
   banner: { type: String },
   about: { type: String },
   industry: { type: String },
+  title: { type: String },
   location: { type: String },
   phoneNumber: { type: String },
   skills: [{ type: String }],

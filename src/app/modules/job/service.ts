@@ -1,13 +1,13 @@
 import ApiError from '@/errors/ApiError';
-import { IJob } from './interface';
+import { IJob, IJobFilter } from './interface';
 import Job from './model';
 import httpStatus from 'http-status';
 import { IPagination } from '@/interfaces/pagination';
-import { IFilters } from '@/interfaces/common';
 import Company from '@modules/company/model';
 import { SortOrder } from 'mongoose';
 import { paginationHelpers } from '@/helpers/paginationHelper';
-import { filterAbleFields } from './constant';
+import User from '../user/model';
+import { ENUM_EMPLOYMENT_TYPE, ENUM_WORK_LEVEL } from '@/enums/job';
 
 const createJob = async (payload: IJob, userId: string) => {
   const companyId = (await Company.findOne({ id: userId }))?._id;
@@ -16,12 +16,22 @@ const createJob = async (payload: IJob, userId: string) => {
 
   payload.company = companyId;
 
+  const jobExist = await Job.findOne({
+    company: companyId,
+    title: payload.title,
+  });
+  if (jobExist)
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'A Job offer with same name already exist'
+    );
+
   const data = await Job.create(payload);
 
   return data;
 };
 
-const getAllJobs = async (pagination: IPagination, filters: IFilters) => {
+const getAllJobs = async (pagination: IPagination, filters: IJobFilter) => {
   const { page, limit, skip, sortOrder, sortBy } =
     paginationHelpers.calculatePagination(pagination);
 
@@ -30,18 +40,18 @@ const getAllJobs = async (pagination: IPagination, filters: IFilters) => {
   sortCondition[sortBy] = sortOrder;
 
   // Filter Options
-  const { searchTerm, ...filtersData } = filters;
+  const { title, workLevel, employmentType, ...filtersData } = filters;
 
   const andConditions = [];
 
-  if (searchTerm) {
+  // Search by Job Title
+  if (title) {
     andConditions.push({
-      $or: filterAbleFields.map(field => ({
-        [field]: { $regex: searchTerm, $options: 'i' },
-      })),
+      title: { $regex: title, $options: 'i' },
     });
   }
 
+  // Search by Location + Category
   if (Object.keys(filtersData).length) {
     andConditions.push({
       $and: Object.entries(filtersData).map(([field, value]) => ({
@@ -50,10 +60,26 @@ const getAllJobs = async (pagination: IPagination, filters: IFilters) => {
     });
   }
 
+  // Filter by Work Level
+  if (workLevel) {
+    const arrayOfWorkLevel = workLevel.split(',');
+    andConditions.push({
+      workLevel: { $in: arrayOfWorkLevel },
+    });
+  }
+
+  // Filter by Employment Type
+  if (employmentType) {
+    const arrayOfEmployemploymentType = employmentType.split(',');
+    andConditions.push({
+      employmentType: { $in: arrayOfEmployemploymentType },
+    });
+  }
+
   const whereCondition = andConditions.length ? { $and: andConditions } : {};
 
-  const Jobs = await Job.find(whereCondition)
-    .populate({ path: 'company', select: '_id name' })
+  const jobs = await Job.find(whereCondition)
+    .populate({ path: 'company', select: '_id name logo' })
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
@@ -62,13 +88,33 @@ const getAllJobs = async (pagination: IPagination, filters: IFilters) => {
 
   const meta = { total, page, limit };
 
-  return { meta, data: Jobs };
+  return { meta, data: jobs };
+};
+
+const getTypeSpecifiJobs = async () => {
+  const employmentType = await Promise.all(
+    Object.values(ENUM_EMPLOYMENT_TYPE).map(async item => {
+      const jobs = await Job.countDocuments({ employmentType: item });
+      return { type: item, jobs };
+    })
+  );
+
+  const workLevel = await Promise.all(
+    Object.values(ENUM_WORK_LEVEL).map(async item => {
+      const jobs = await Job.countDocuments({ workLevel: item });
+      return { type: item, jobs };
+    })
+  );
+
+  return { employmentType, workLevel };
 };
 
 const getJob = async (id: string) => {
-  const data = await Job.findById(id).populate('company');
+  const data = await Job.findById(id).populate('company').lean();
 
-  return data;
+  const email = (await User.findOne({ id: data?.company.id }))?.email;
+
+  return { ...data, email };
 };
 
 const updateJob = async (id: string, payload: IJob, userId: string) => {
@@ -81,10 +127,7 @@ const updateJob = async (id: string, payload: IJob, userId: string) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Company doesn't exist");
 
   if (!(await Job.isJobCreator(id, companyId)))
-    throw new ApiError(
-      httpStatus.NOT_FOUND,
-      "You didn't posted this job"
-    );
+    throw new ApiError(httpStatus.NOT_FOUND, "You didn't posted this job");
 
   const data = await Job.findByIdAndUpdate(id, payload, {
     new: true,
@@ -104,10 +147,7 @@ const deleteJob = async (id: string, userId: string) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Company doesn't exist");
 
   if (!(await Job.isJobCreator(id, companyId)))
-    throw new ApiError(
-      httpStatus.NOT_FOUND,
-      "You didn't posted this job"
-    );
+    throw new ApiError(httpStatus.NOT_FOUND, "You didn't posted this job");
 
   const data = await Job.findByIdAndDelete(id);
 
@@ -117,6 +157,7 @@ const deleteJob = async (id: string, userId: string) => {
 export const JobServices = {
   createJob,
   getAllJobs,
+  getTypeSpecifiJobs,
   getJob,
   updateJob,
   deleteJob,

@@ -15,6 +15,8 @@ router.post(
 
 router.get('/', JobControllers.getAllJobs);
 
+router.get('/type-specific', JobControllers.getTypeSpecifiJobs);
+
 router.get(
   '/:id',
   auth(

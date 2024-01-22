@@ -67,6 +67,7 @@ userSchema.statics.isPasswordMatched = async function (
 // To Get Role Specific user details
 userSchema.statics.getRoleSpecificDetails = async function (id: string) {
   let user = await User.findOne({ id });
+  const email = user?.email as string;
 
   if (user?.role === ENUM_USER_ROLE.CANDIDATE)
     user = await Candidate.findOne({ id: id });
@@ -74,7 +75,8 @@ userSchema.statics.getRoleSpecificDetails = async function (id: string) {
   if (user?.role === ENUM_USER_ROLE.COMPANY)
     user = await Company.findOne({ id: id });
 
-  return user;
+  // @ts-ignore
+  return { ...user._doc, email };
 };
 
 // To Generate Token

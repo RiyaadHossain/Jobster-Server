@@ -12,6 +12,30 @@ import { months } from './constant';
 import { IApplication } from '../application/interface';
 
 const overview = async (authUser: JwtPayload) => {
+  const jobApplications = {
+    title: 'Job Application',
+    quantity: 0,
+    type: 'job_applications',
+  };
+
+  const profileViews = {
+    title: 'Profile Views',
+    quantity: 0,
+    type: 'profile_views',
+  };
+
+  const unreadMessages = {
+    title: 'Unread Messages',
+    quantity: 0,
+    type: 'unread_messages',
+  };
+
+  const notifications = {
+    title: 'notifications',
+    quantity: 0,
+    type: 'notifications',
+  };
+
   const userId = authUser.userId;
   const role = authUser.role;
 
@@ -20,21 +44,27 @@ const overview = async (authUser: JwtPayload) => {
   if (!user)
     throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist");
 
-  let jobs = 0;
-  if (role === ENUM_USER_ROLE.COMPANY)
-    jobs = await Job.countDocuments({ company: user._id });
+  if (role === ENUM_USER_ROLE.COMPANY) {
+    const jobs = await Job.find({ company: user._id });
+    const jobIds = jobs.map(job => job._id);
+    jobApplications.quantity = await Application.countDocuments({
+      job: { $in: jobIds },
+    });
+  }
   if (role === ENUM_USER_ROLE.CANDIDATE)
-    jobs = await Application.countDocuments({ candidate: user._id });
+    jobApplications.quantity = await Application.countDocuments({
+      candidate: user._id,
+    });
 
-  const profileViews = await ProfileView.countDocuments({ userId });
+  profileViews.quantity = await ProfileView.countDocuments({ userId });
 
-  const unreadMessages = Math.floor(Math.random() * 50) + 1;
+  unreadMessages.quantity = 0;
 
-  const notifications = await Notification.countDocuments({
+  notifications.quantity = await Notification.countDocuments({
     'to._id': user._id,
   });
 
-  return { jobs, profileViews, unreadMessages, notifications };
+  return [jobApplications, profileViews, unreadMessages, notifications];
 };
 
 const profileViewStat = async (authUser: JwtPayload, totalMonths: number) => {
@@ -45,14 +75,18 @@ const profileViewStat = async (authUser: JwtPayload, totalMonths: number) => {
   if (!user)
     throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist");
 
+  if (isNaN(totalMonths)) totalMonths = 6;
+
   let lastNthMonthInfo = DashboardUtils.getLastNthMonth(totalMonths);
 
   const lastDate = DashboardUtils.getDateFromNthMonthBack(totalMonths);
+
   const profileViews = await ProfileView.find({
     userId,
     viewedAt: { $gte: lastDate },
   });
 
+  let totalViews = 0;
   lastNthMonthInfo = lastNthMonthInfo.map(date => {
     let views = 0;
     profileViews.forEach(item => {
@@ -61,10 +95,12 @@ const profileViewStat = async (authUser: JwtPayload, totalMonths: number) => {
       if (month === date.month && year === date.year) views++;
     });
 
+    totalViews += views;
+    date.month = `${date.month} ${date.year.toString().slice(-2)}`;
     return { ...date, views };
   });
 
-  return lastNthMonthInfo;
+  return { stats: lastNthMonthInfo, total: totalViews };
 };
 
 const applicationStat = async (authUser: JwtPayload, totalMonths: number) => {
@@ -75,17 +111,19 @@ const applicationStat = async (authUser: JwtPayload, totalMonths: number) => {
   if (!user)
     throw new ApiError(httpStatus.NOT_FOUND, "User account doesn't exist");
 
+  if (isNaN(totalMonths)) totalMonths = 6;
+
   let lastNthMonthInfo = DashboardUtils.getLastNthMonth(totalMonths);
 
   const lastDate = DashboardUtils.getDateFromNthMonthBack(totalMonths);
 
-  let applications: IApplication[] = [];
+  let applicationsReceived: IApplication[] = [];
 
   // Role -> Company
   if (authUser.role === ENUM_USER_ROLE.COMPANY) {
     const jobs = await Job.find({ company: user._id });
     const jobIds = jobs.map(job => job._id);
-    applications = await Application.find({
+    applicationsReceived = await Application.find({
       job: { $in: jobIds },
       createdAt: { $gte: lastDate },
     });
@@ -93,24 +131,27 @@ const applicationStat = async (authUser: JwtPayload, totalMonths: number) => {
 
   // Role -> Candidate
   if (authUser.role === ENUM_USER_ROLE.CANDIDATE) {
-    applications = await Application.find({
+    applicationsReceived = await Application.find({
       candidate: user._id,
       createdAt: { $gte: lastDate },
     });
   }
 
+  let totalApplications = 0;
   lastNthMonthInfo = lastNthMonthInfo.map(date => {
-    let application = 0;
-    applications.forEach(item => {
+    let applications = 0;
+    applicationsReceived.forEach(item => {
       const month = months[item.createdAt.getMonth()];
       const year = item.createdAt.getFullYear();
-      if (month === date.month && year === date.year) application++;
+      if (month === date.month && year === date.year) applications++;
     });
 
-    return { ...date, application };
+    totalApplications += applications;
+    date.month = `${date.month} ${date.year.toString().slice(-2)}`;
+    return { ...date, applications };
   });
 
-  return lastNthMonthInfo;
+  return { stats: lastNthMonthInfo, total: totalApplications };
 };
 
 export const DashboardServices = { overview, profileViewStat, applicationStat };

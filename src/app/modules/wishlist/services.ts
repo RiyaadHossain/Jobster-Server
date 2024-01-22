@@ -1,6 +1,6 @@
 import ApiError from '@/errors/ApiError';
 import Candidate from '../candidate/model';
-import { IWishlist } from './interface';
+import { IWishlist, IWishlistPopulated } from './interface';
 import httpStatus from 'http-status';
 import Wishlist from './model';
 import Job from '../job/model';
@@ -26,16 +26,44 @@ const add = async (payload: IWishlist, userId: string) => {
   return data;
 };
 
-const myList = async (userId: string) => {
+const myList = async (userId: string, searchTerm: string) => {
   const candidate = await Candidate.findOne({ id: userId });
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not found');
 
-  const data = await Wishlist.find({ candidate: candidate._id }).populate({
+  const data: IWishlistPopulated[] = await Wishlist.find({
+    candidate: candidate._id,
+  }).populate({
     path: 'job',
-    populate: 'company',
+    select: '_id title company',
+    populate: { path: 'company', select: '_id name' },
   });
-  return data;
+
+  let filteredData = data;
+  if (searchTerm)
+    filteredData = data.filter(item => {
+      searchTerm = searchTerm?.toLowerCase();
+      const jobTitle = item?.job?.title?.toLowerCase();
+      const companyName = item?.job?.company?.name?.toLowerCase();
+
+      // @ts-ignore
+      return jobTitle.includes(searchTerm) || companyName.includes(searchTerm);
+    });
+
+  return filteredData;
+};
+
+const alreadyAdded = async (jobId: string, userId: string) => {
+  const candidate = await Candidate.findOne({ id: userId });
+  if (!candidate)
+    throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not found');
+
+  const isAdded = await Wishlist.findOne({
+    candidate: candidate._id,
+    job: jobId,
+  });
+
+  return !!isAdded;
 };
 
 const remove = async (id: string, userId: string) => {
@@ -57,4 +85,4 @@ const remove = async (id: string, userId: string) => {
   return data;
 };
 
-export const WishlistServices = { add, myList, remove };
+export const WishlistServices = { add, myList, alreadyAdded, remove };

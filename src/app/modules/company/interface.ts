@@ -1,6 +1,7 @@
 export type ICompany = {
   id: string;
   name: string;
+  email: string;
   logo: string;
   banner: string;
   phoneNumber: string;

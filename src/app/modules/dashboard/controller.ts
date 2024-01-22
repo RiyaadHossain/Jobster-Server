@@ -31,7 +31,7 @@ const profileViewStat: RequestHandler = catchAsync(async (req, res) => {
 
 const applicationStat: RequestHandler = catchAsync(async (req, res) => {
   const authUser = req.user;
-  const months = Number(req.query.months);
+  const months = Number(req.query.months) ;
   const result = await DashboardServices.applicationStat(authUser, months);
 
   sendResponse(res, {
@@ -42,4 +42,8 @@ const applicationStat: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-export const DashboardControllers = { overview, profileViewStat, applicationStat };
+export const DashboardControllers = {
+  overview,
+  profileViewStat,
+  applicationStat,
+};

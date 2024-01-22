@@ -8,7 +8,7 @@ const editProfile = z.object({
     banner: z.string().optional(),
     phoneNumber: z.string().optional(),
     location: z.string().optional(),
-    industry: z.string().optional(),
+    title: z.string().optional(),
     about: z.string().optional(),
     skills: z.string().array().optional(),
     workExperience: z

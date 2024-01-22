@@ -10,6 +10,12 @@ router.get(
   NotificationControllers.getAllNotifications
 );
 
+router.get(
+  '/unread',
+  auth([ENUM_USER_ROLE.COMPANY, ENUM_USER_ROLE.CANDIDATE]),
+  NotificationControllers.getUnreadNotificationsCount
+);
+
 router.patch(
   '/read-all',
   auth([ENUM_USER_ROLE.COMPANY, ENUM_USER_ROLE.CANDIDATE]),

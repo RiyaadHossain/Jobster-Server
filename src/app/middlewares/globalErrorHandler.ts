@@ -37,6 +37,7 @@ const globalErrorHandler: ErrorRequestHandler = (
     const simplifiedError = handleZodError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
+    type = simplifiedError.type;
     errorMessages = simplifiedError.errorMessages;
   } else if (error?.name === 'CastError') {
     const simplifiedError = handleCastError(error);

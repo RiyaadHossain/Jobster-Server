@@ -33,6 +33,17 @@ const getAllJobs: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const getTypeSpecifiJobs: RequestHandler = catchAsync(async (req, res) => {
+  const result = await JobServices.getTypeSpecifiJobs();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Type specifi Job data retrived successfully',
+    data: result,
+  });
+});
+
 const getJob: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
   const result = await JobServices.getJob(id);
@@ -75,6 +86,7 @@ const deleteJob: RequestHandler = catchAsync(async (req, res) => {
 export const JobControllers = {
   createJob,
   getAllJobs,
+  getTypeSpecifiJobs,
   getJob,
   updateJob,
   deleteJob,

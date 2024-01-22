@@ -16,6 +16,20 @@ const getAllNotifications: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const getUnreadNotificationsCount: RequestHandler = catchAsync(
+  async (req, res) => {
+    const user = req.user;
+    const result = await NotificationServices.getUnreadNotificationsCount(user);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Unread notifications count retrived successfully',
+      data: result,
+    });
+  }
+);
+
 const readAllNotifications: RequestHandler = catchAsync(async (req, res) => {
   const user = req.user;
   const result = await NotificationServices.readAllNotifications(user);
@@ -55,6 +69,7 @@ const deleteNotification: RequestHandler = catchAsync(async (req, res) => {
 
 export const NotificationControllers = {
   getAllNotifications,
+  getUnreadNotificationsCount,
   readAllNotifications,
   deleteAllNotifications,
   deleteNotification,

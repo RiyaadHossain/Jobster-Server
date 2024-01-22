@@ -11,11 +11,9 @@ import { ICompany } from './interface';
 import Company from './model';
 import Job from '../job/model';
 import Application from '../application/model';
-import { INotification } from '../notiifcaiton/interface';
-import { ENUM_USER_ROLE } from '@/enums/user';
-import { NotificationServices } from '../notiifcaiton/service';
-import { ENUM_NOFICATION_TYPE } from '@/enums/notification';
-import ProfileView from '../dashboard/model';
+import { CandidateUtils } from '../candidate/utils';
+import { IApplicationPopulated } from '../application/interface';
+import { IJobQuery } from '../job/interface';
 
 const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
@@ -48,10 +46,18 @@ const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
 
   const whereCondition = andConditions.length ? { $and: andConditions } : {};
 
-  const compnaies = await Company.find(whereCondition)
+  let compnaies = await Company.find(whereCondition)
     .sort(sortCondition)
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .lean();
+
+  compnaies = await Promise.all(
+    compnaies.map(async company => {
+      const jobs = await Job.countDocuments({ company: company._id });
+      return { ...company, jobs };
+    })
+  );
 
   const total = await Company.countDocuments(whereCondition);
 
@@ -60,45 +66,16 @@ const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
   return { meta, data: compnaies };
 };
 
-const getCompany = async (id: string, authUser: JwtPayload | null) => {
-  const company = await Company.findById(id);
+const getCompany = async (id: string, authUser: JwtPayload) => {
+  const company = await Company.findById(id).lean();
 
-  const currentMin = new Date();
-  const oneMinEarlier = new Date(
-    currentMin.setMinutes(currentMin.getMinutes() - 2)
-  );
-  const viewed = await ProfileView.findOne({
-    userId: company?._id,
-    viewedBy: authUser?.userId,
-    viewedAt: { $gte: oneMinEarlier },
-  });
-  
-  if (!viewed && company && authUser) {
-    await ProfileView.create({
-      userId: company._id,
-      viewedBy: authUser.userId,
-    });
-    // Send notification to company
-    const user = await User.getRoleSpecificDetails(authUser.userId);
+  if (!company)
+    throw new ApiError(httpStatus.BAD_REQUEST, "Company account doesn't exist");
 
-    if (!user)
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Notification sender account doesn't exist"
-      );
+  const email = (await User.findOne({ id: company.id }))?.email as string;
+  company.email = email;
 
-    const notificationPayload: INotification = {
-      type: ENUM_NOFICATION_TYPE.PROFILE_VIEW,
-      from: { _id: user._id, name: user.name, role: authUser.role },
-      to: {
-        _id: company._id,
-        name: company.name,
-        role: ENUM_USER_ROLE.COMPANY,
-      },
-    };
-
-    NotificationServices.createNotification(notificationPayload);
-  }
+  CandidateUtils.countProfileView(authUser, company);
 
   const availableJobs = await Job.find({ company: id });
 
@@ -119,12 +96,15 @@ const editProfile = async (userId: string, payload: ICompany) => {
   return updatedData;
 };
 
-const myJobs = async (userId: string) => {
+const myJobs = async (userId: string, searchTerm: string) => {
   const company = await Company.findOne({ id: userId });
   if (!company)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Company account is not exist!');
 
-  const jobs = await Job.find({ company: company._id });
+  const query: IJobQuery = { company: company._id };
+  if (searchTerm) query['title'] = {$regex: searchTerm, $options:'i'};
+
+  const jobs = await Job.find(query);
 
   // Create an array to store job details along with applications' ids
   const jobsWithApplications = await Promise.all(
@@ -145,7 +125,7 @@ const myJobs = async (userId: string) => {
   return jobsWithApplications;
 };
 
-const appliedCandidates = async (userId: string) => {
+const appliedCandidates = async (userId: string, searchTerm: string) => {
   const company = await Company.findOne({ id: userId });
   if (!company)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Company account is not exist!');
@@ -153,14 +133,25 @@ const appliedCandidates = async (userId: string) => {
   const jobs = await Job.find({ company: company._id });
   const jobIds = jobs.map(job => job._id);
 
-  const applications = await Application.find({
+  const data: IApplicationPopulated[] = await Application.find({
     job: { $in: jobIds },
   }).populate([
     { path: 'job', select: '_id title' },
-    { path: 'candidate', select: '_id name location' },
+    { path: 'candidate', select: '_id name avatar location' },
   ]);
 
-  return applications;
+  let filteredData = data;
+  if (searchTerm)
+    filteredData = data.filter(item => {
+      searchTerm = searchTerm?.toLowerCase();
+      const jobTitle = item?.job?.title?.toLowerCase();
+      const companyName = item?.candidate?.name?.toLowerCase();
+
+      // @ts-ignore
+      return jobTitle.includes(searchTerm) || companyName.includes(searchTerm);
+    });
+
+  return filteredData;
 };
 
 export const CompanyServices = {

@@ -36,4 +36,10 @@ router.post(
   CandidateControllers.uploadResume
 );
 
+router.delete(
+  '/delete-resume',
+  auth([ENUM_USER_ROLE.CANDIDATE]),
+  CandidateControllers.deleteResume
+);
+
 export const CandidateRoutes = router;

@@ -20,6 +20,12 @@ router.get(
   WishlistControllers.myList
 );
 
+router.get(
+  '/already-added/:id',
+  auth([ENUM_USER_ROLE.CANDIDATE]),
+  WishlistControllers.alreadyAdded
+);
+
 router.delete(
   '/remove/:id',
   auth([ENUM_USER_ROLE.CANDIDATE]),

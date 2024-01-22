@@ -12,14 +12,14 @@ const editProfile = z.object({
     location: z.string().optional(),
     industry: z.string().optional(),
     about: z.string().optional(),
-    galleries: z.string().optional(),
+    galleries: z.string().array().optional(),
     website: z.string().optional(),
     socialLinks: z
       .object({
-        facebook: z.string(),
-        twitter: z.string(),
-        instagram: z.string(),
-        linkedin: z.string(),
+        facebook: z.string().optional(),
+        twitter: z.string().optional(),
+        instagram: z.string().optional(),
+        linkedin: z.string().optional(),
       })
       .optional(),
   }),

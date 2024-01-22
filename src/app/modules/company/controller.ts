@@ -52,7 +52,8 @@ const editProfile: RequestHandler = catchAsync(async (req, res) => {
 
 const myJobs: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.user?.userId;
-  const result = await CompanyServices.myJobs(userId);
+  const searchTerm = req.query.searchTerm as string
+  const result = await CompanyServices.myJobs(userId, searchTerm);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -64,7 +65,8 @@ const myJobs: RequestHandler = catchAsync(async (req, res) => {
 
 const appliedCandidates: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.user?.userId;
-  const result = await CompanyServices.appliedCandidates(userId);
+  const searchTerm = req.query.searchTerm as string
+  const result = await CompanyServices.appliedCandidates(userId, searchTerm);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
