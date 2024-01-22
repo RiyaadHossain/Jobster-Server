@@ -51,8 +51,9 @@ const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
     .limit(limit);
 
   const total = await Candidate.countDocuments(whereCondition);
+  const totalPages = Math.ceil(total / limit);
 
-  const meta = { total, page, limit };
+  const meta = { total, page, limit, totalPages };
 
   return { meta, data: Candidates };
 };

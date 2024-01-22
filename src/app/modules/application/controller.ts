@@ -3,8 +3,6 @@ import sendResponse from '@/shared/sendResponse';
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
 import { ApplicaitonServices } from './service';
-import pick from '@/shared/pick';
-import { searchableFields } from './constant';
 
 const apply: RequestHandler = catchAsync(async (req, res) => {
   const applicationData = req.body;
@@ -21,11 +19,8 @@ const apply: RequestHandler = catchAsync(async (req, res) => {
 
 const myApplications: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.user?.userId;
-  const search = pick(req.query, searchableFields);
-  const result = await ApplicaitonServices.myApplications(
-    userId,
-    search
-  );
+  const searchTerm = req.query.searchTerm as string;
+  const result = await ApplicaitonServices.myApplications(userId, searchTerm);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,

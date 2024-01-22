@@ -60,8 +60,9 @@ const getAllCompanies = async (pagination: IPagination, filters: IFilters) => {
   );
 
   const total = await Company.countDocuments(whereCondition);
+  const totalPages = Math.ceil(total / limit);
 
-  const meta = { total, page, limit };
+  const meta = { total, page, limit, totalPages };
 
   return { meta, data: compnaies };
 };
@@ -102,7 +103,7 @@ const myJobs = async (userId: string, searchTerm: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Company account is not exist!');
 
   const query: IJobQuery = { company: company._id };
-  if (searchTerm) query['title'] = {$regex: searchTerm, $options:'i'};
+  if (searchTerm) query['title'] = { $regex: searchTerm, $options: 'i' };
 
   const jobs = await Job.find(query);
 

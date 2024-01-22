@@ -85,8 +85,9 @@ const getAllJobs = async (pagination: IPagination, filters: IJobFilter) => {
     .limit(limit);
 
   const total = await Job.countDocuments(whereCondition);
+  const totalPages = Math.ceil(total / limit);
 
-  const meta = { total, page, limit };
+  const meta = { total, page, limit, totalPages };
 
   return { meta, data: jobs };
 };

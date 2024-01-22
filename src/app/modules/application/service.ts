@@ -11,7 +11,6 @@ import { ENUM_USER_ROLE } from '@/enums/user';
 import { INotification } from '../notiifcaiton/interface';
 import Candidate from '../candidate/model';
 import Job from '../job/model';
-import { ISearch } from '@/interfaces/common';
 
 const apply = async (payload: IApplication, userId: string) => {
   const job = await Job.findById(payload.job);
@@ -54,12 +53,10 @@ const apply = async (payload: IApplication, userId: string) => {
   return data;
 };
 
-const myApplications = async (userId: string, searchObj: ISearch) => {
+const myApplications = async (userId: string, searchTerm: string) => {
   const candidate = await ApplicationUtils.isCandidateExist(userId);
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not exist');
-
-  let { searchTerm } = searchObj;
 
   const data: IApplicationPopulated[] = await Application.find({
     candidate: candidate._id,

@@ -35,7 +35,7 @@ const myList = async (userId: string, searchTerm: string) => {
     candidate: candidate._id,
   }).populate({
     path: 'job',
-    select: '_id title company',
+    select: '_id title company category employmentType',
     populate: { path: 'company', select: '_id name' },
   });
 
