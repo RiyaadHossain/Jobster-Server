@@ -8,6 +8,7 @@ import { ApplicationRoutes } from '@modules/application/routes';
 import { WishlistRoutes } from '@modules/wishlist/routes';
 import { NotificationRoutes } from '@modules/notiifcaiton/routes';
 import { DashboardRoutes } from '@modules/dashboard/routes';
+import { IndustryRoutes } from '../modules/industry/routes';
 
 const router = express.Router();
 
@@ -31,6 +32,10 @@ const moduleRoutes = [
   {
     path: '/job',
     routes: JobRoutes,
+  },
+  {
+    path: '/industry',
+    routes: IndustryRoutes,
   },
   {
     path: '/application',

@@ -1,3 +1,5 @@
+import { ENUM_INDUSTRY } from '@/enums/industry';
+import { ENUM_LOCATION } from '@/enums/location';
 import { z } from 'zod';
 
 const editProfile = z.object({
@@ -9,8 +11,12 @@ const editProfile = z.object({
     phoneNumber: z.string().optional(),
     companySize: z.string().optional(),
     founded: z.string().optional(),
-    location: z.string().optional(),
-    industry: z.string().optional(),
+    location: z
+      .enum([...Object.values(ENUM_LOCATION)] as [string, ...string[]])
+      .optional(),
+    industry: z
+      .enum([...Object.values(ENUM_INDUSTRY)] as [string, ...string[]])
+      .optional(),
     about: z.string().optional(),
     galleries: z.string().array().optional(),
     website: z.string().optional(),

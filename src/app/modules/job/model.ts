@@ -1,5 +1,9 @@
 import { Schema, Types, model } from 'mongoose';
-import { ENUM_WORK_LEVEL, ENUM_EMPLOYMENT_TYPE } from '@/enums/job';
+import {
+  ENUM_WORK_LEVEL,
+  ENUM_EMPLOYMENT_TYPE,
+  ENUM_JOB_STATUS,
+} from '@/enums/job';
 import { IJob, JobModel } from './interface';
 
 const jobSchema = new Schema<IJob>(
@@ -7,10 +11,15 @@ const jobSchema = new Schema<IJob>(
     title: { type: String, required: true, unique: true },
     company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
     location: { type: String },
-    category: { type: String, required: true },
+    industry: { type: String, required: true },
     description: { type: String, required: true },
     salaryRange: { type: String, required: true },
     experience: { type: String, required: true },
+    status: {
+      type: String,
+      enum: Object.values(ENUM_JOB_STATUS),
+      default: ENUM_JOB_STATUS.PUBLISHED,
+    },
     workLevel: {
       type: String,
       enum: Object.values(ENUM_WORK_LEVEL),

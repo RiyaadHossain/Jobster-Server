@@ -69,7 +69,7 @@ const getCandidate = async (id: string, authUser: JwtPayload) => {
 
   const email = (await User.findOne({ id: candidate.id }))?.email;
 
-  CandidateUtils.countProfileView(authUser, candidate);
+  if (authUser) CandidateUtils.countProfileView(authUser, candidate);
 
   // @ts-ignore
   return { ...candidate._doc, email };

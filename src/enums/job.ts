@@ -10,8 +10,13 @@ export enum ENUM_WORK_LEVEL {
 export enum ENUM_EMPLOYMENT_TYPE {
   CONTRACT = 'contract',
   FULL_TIME = 'full_time',
-  INTERNSHIP = 'internsip',
+  INTERNSHIP = 'internship',
   PART_TIME = 'part_time',
   REMOTE = 'remote',
   TRAINING = 'training',
+}
+
+export enum ENUM_JOB_STATUS {
+  PUBLISHED = 'published',
+  CLOSED = 'closed',
 }

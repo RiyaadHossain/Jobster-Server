@@ -11,7 +11,7 @@ const candidateSchema = new Schema<ICandidate>({
   title: { type: String },
   location: { type: String },
   phoneNumber: { type: String },
-  skills: [{ type: String }],
+  skills: [{ title: { type: String } }],
   resume: {
     fileName: { type: String },
     fileURL: { type: String },

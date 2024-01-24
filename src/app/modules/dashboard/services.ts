@@ -13,27 +13,23 @@ import { IApplication } from '../application/interface';
 
 const overview = async (authUser: JwtPayload) => {
   const jobApplications = {
-    title: 'Job Application',
-    quantity: 0,
     type: 'job_applications',
+    quantity: 0,
   };
 
   const profileViews = {
-    title: 'Profile Views',
-    quantity: 0,
     type: 'profile_views',
+    quantity: 0,
   };
 
   const unreadMessages = {
-    title: 'Unread Messages',
-    quantity: 0,
     type: 'unread_messages',
+    quantity: 0,
   };
 
   const notifications = {
-    title: 'notifications',
-    quantity: 0,
     type: 'notifications',
+    quantity: 0,
   };
 
   const userId = authUser.userId;

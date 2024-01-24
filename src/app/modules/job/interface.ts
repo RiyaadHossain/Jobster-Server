@@ -1,15 +1,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { ENUM_EMPLOYMENT_TYPE, ENUM_WORK_LEVEL } from '@/enums/job';
+import {
+  ENUM_EMPLOYMENT_TYPE,
+  ENUM_JOB_STATUS,
+  ENUM_WORK_LEVEL,
+} from '@/enums/job';
 import { Model, Types } from 'mongoose';
 
 export type IJob = {
   title: string;
-  category: string;
+  industry: string;
   company: Types.ObjectId;
   location: string;
   description: string;
   experience: string;
+  status: ENUM_JOB_STATUS;
   workLevel: ENUM_WORK_LEVEL;
   employmentType: ENUM_EMPLOYMENT_TYPE;
   salaryRange: string;
@@ -28,7 +33,7 @@ export type IJobFilter = {
   workLevel?: string;
   employmentType?: string;
   location?: string;
-  category?: string;
+  industry?: string;
 };
 
 export type IJobQuery = {

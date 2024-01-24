@@ -51,7 +51,7 @@ const getAllJobs = async (pagination: IPagination, filters: IJobFilter) => {
     });
   }
 
-  // Search by Location + Category
+  // Search by Location + Industry
   if (Object.keys(filtersData).length) {
     andConditions.push({
       $and: Object.entries(filtersData).map(([field, value]) => ({

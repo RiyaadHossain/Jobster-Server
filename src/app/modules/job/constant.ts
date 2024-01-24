@@ -1,10 +1,10 @@
 export const searchAndFilterAbleFields = [
   'searchTerm',
   'title',
-  'category',
+  'industry',
   'location',
   'workLevel',
   'employmentType',
 ];
 
-export const filterAbleFields = ['title', 'category', 'location'];
+export const filterAbleFields = ['title', 'industry', 'location'];

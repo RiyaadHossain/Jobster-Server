@@ -17,7 +17,7 @@ type UserType = (ICandidate | ICompany) & {
 
 const countProfileView = async (authUser: JwtPayload, user: UserType) => {
   // if user himself viewing his own profile
-  if (authUser.userId === user.id) return;
+  if (authUser?.userId === user?.id) return;
 
   const currentMin = new Date();
   const oneMinEarlier = new Date(
