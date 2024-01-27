@@ -28,4 +28,9 @@ export default {
     EMAIL: process.env.SMTP_EMAIL,
     PASS: process.env.SMTP_PASS,
   },
+  CLOUDINARY: {
+    CLOUD_NAME: process.env.CLOUD_NAME,
+    API_KEY: process.env.API_KEY,
+    API_SECRET: process.env.API_SECRET,
+  },
 };

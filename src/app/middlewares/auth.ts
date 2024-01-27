@@ -22,7 +22,7 @@ const auth =
       // verify token
       let verifiedUser = null;
       verifiedUser = jwtHelpers.verifyToken(token, config.JWT.SECRET as Secret);
-
+      
       req.user = verifiedUser; // role  , userId
 
       // Authorize user access

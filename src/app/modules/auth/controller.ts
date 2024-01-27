@@ -12,10 +12,13 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
   );
 
   // Set Cookie
+  const cookieExpires = new Date(
+    new Date().getTime() + 365 * 24 * 60 * 60 * 1000
+  );
   const cookieOptions: CookieOptions = {
     secure: config.ENV === 'production',
     httpOnly: true,
-    sameSite: 'none',
+    expires: cookieExpires,
   };
 
   res.cookie('refreshToken', refreshToken, cookieOptions);
@@ -24,7 +27,7 @@ const signIn: RequestHandler = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User signed in successfully',
-    data: { accessToken, refreshToken },
+    data: { accessToken },
   });
 });
 

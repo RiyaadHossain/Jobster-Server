@@ -11,6 +11,7 @@ import { ENUM_USER_ROLE } from '@/enums/user';
 import { INotification } from '../notiifcaiton/interface';
 import Candidate from '../candidate/model';
 import Job from '../job/model';
+import { ENUM_JOB_STATUS } from '@/enums/job';
 
 const apply = async (payload: IApplication, userId: string) => {
   const job = await Job.findById(payload.job);
@@ -23,6 +24,9 @@ const apply = async (payload: IApplication, userId: string) => {
   const candidate = await Candidate.findOne({ id: userId });
   if (!candidate)
     throw new ApiError(httpStatus.NOT_FOUND, 'Candidate account not exist');
+
+  if (job.status === ENUM_JOB_STATUS.CLOSED)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Job offer is closed');
 
   const alreadyApplied = await Application.findOne({
     job: payload.job,
@@ -62,10 +66,9 @@ const myApplications = async (userId: string, searchTerm: string) => {
     candidate: candidate._id,
   }).populate({
     path: 'job',
-    populate: { path: 'company', select: '_id name' },
-    select: '_id title company',
+    select: '_id title company industry employmentType location',
+    populate: { path: 'company', select: '_id name logo industry location' },
   });
-
 
   let filteredData = data;
   if (searchTerm)

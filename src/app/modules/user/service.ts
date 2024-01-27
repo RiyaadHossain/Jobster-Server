@@ -132,6 +132,7 @@ const uploadImage = async (
 
   const imageUrl = uploadImage.secure_url;
 
+
   // 4. Save image url
   if (user.role === ENUM_USER_ROLE.CANDIDATE)
     await Candidate.findOneAndUpdate({ id: userId }, { [filedName]: imageUrl });

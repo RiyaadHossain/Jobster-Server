@@ -13,7 +13,6 @@ import { IUploadFile } from '@/interfaces/file';
 import { FileUploader } from '@/helpers/fileUploader';
 import { ENUM_FILE_TYPE } from '@/enums/file';
 import { CandidateUtils } from './utils';
-
 const getAllCandidates = async (pagination: IPagination, filters: IFilters) => {
   const { page, limit, skip, sortOrder, sortBy } =
     paginationHelpers.calculatePagination(pagination);
@@ -92,7 +91,7 @@ const editProfile = async (userId: string, payload: ICandidate) => {
       runValidators: true,
     }
   );
-
+  console.log(user,updatedData);
   return updatedData;
 };
 

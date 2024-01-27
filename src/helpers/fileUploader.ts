@@ -6,11 +6,12 @@ import path from 'path';
 import ApiError from '@/errors/ApiError';
 import httpStatus from 'http-status';
 import { ENUM_FILE_TYPE } from '@/enums/file';
+import config from '@/config';
 
 cloudinary.config({
-  cloud_name: 'dwsgahykt',
-  api_key: '583439511651374',
-  api_secret: '1gF5YQC4NhTQmDWa-XfeRk_Zvew',
+  cloud_name: config.CLOUDINARY.CLOUD_NAME,
+  api_key: config.CLOUDINARY.API_KEY,
+  api_secret: config.CLOUDINARY.API_SECRET,
 });
 
 const storage = multer.diskStorage({
@@ -33,13 +34,13 @@ const uploadToCloudinary = async (
   file: IUploadFile,
   fileType: ENUM_FILE_TYPE
 ) => {
-  
   if (!file?.mimetype.includes(fileType)) {
     unlinkSync(file.path);
     throw new ApiError(httpStatus.BAD_REQUEST, `File type must be ${fileType}`);
   }
 
   const result = await cloudinary.uploader.upload(file.path);
+
   unlinkSync(file.path);
   return result;
 };

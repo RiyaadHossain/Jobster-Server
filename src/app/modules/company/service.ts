@@ -137,8 +137,8 @@ const appliedCandidates = async (userId: string, searchTerm: string) => {
   const data: IApplicationPopulated[] = await Application.find({
     job: { $in: jobIds },
   }).populate([
-    { path: 'job', select: '_id title' },
-    { path: 'candidate', select: '_id name avatar location' },
+    { path: 'job', select: '_id title industry location' },
+    { path: 'candidate', select: '_id name avatar location industry' },
   ]);
 
   let filteredData = data;

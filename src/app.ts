@@ -12,6 +12,7 @@ const corsOptions = {
   origin: config.CLIENT_URL,
   credentials: true,
 };
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
