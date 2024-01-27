@@ -38,7 +38,7 @@
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     "paths": {
       "@/*": ["./src/*"],
-      "@config": ["./src/config/index.ts"],
+      "@config": ["./src/config"],
       "@middlewares/*": ["./src/app/middlewares/*"],
       "@modules/*": ["./src/app/modules/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,

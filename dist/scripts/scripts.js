@@ -1,9 +1,10 @@
-/* import Candidate from '@/app/modules/candidate/model';
-import Company from '@/app/modules/company/model';
-import Job from '@/app/modules/job/model';
-import User from '@/app/modules/user/model';
-import { ENUM_USER_ACCOUNT_STATUS, ENUM_USER_ROLE } from '@/enums/user';
-import { Utils } from '@/utils/common';
+"use strict";
+/* import Candidate from '../app/modules/candidate/model';
+import Company from '../app/modules/company/model';
+import Job from '../app/modules/job/model';
+import User from '../app/modules/user/model';
+import { ENUM_USER_ACCOUNT_STATUS, ENUM_USER_ROLE } from '../enums/user';
+import { Utils } from '../utils/common';
 import { promise } from 'zod';
 
 export const unsetFields = async () => {
@@ -90,4 +91,4 @@ export const setIdInUser = async () => {
     })
   );
 };
- */
+ */ 

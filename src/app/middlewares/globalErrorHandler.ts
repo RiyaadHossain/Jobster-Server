@@ -23,7 +23,7 @@ const globalErrorHandler: ErrorRequestHandler = (
     ? console.log(`🐱 globalErrorHandler ~~`, { error })
     : console.log(`🐱 globalErrorHandler ~~`, error);
 
-  let type = '';
+  let type: string | undefined = '';
   let statusCode = 500;
   let message = 'Something went wrong !';
   let errorMessages: IGenericErrorMessage[] = [];
