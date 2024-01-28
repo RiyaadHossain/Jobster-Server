@@ -12,7 +12,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // import { CLIENT_URL } from './constants/common';
 const app = (0, express_1.default)();
 const corsOptions = {
-    origin: 'http://localhost:3000/',
+    origin: 'http://localhost:3000',
     credentials: true,
 };
 // const corsOptions: CorsOptions = {
