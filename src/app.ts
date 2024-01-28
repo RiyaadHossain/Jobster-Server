@@ -4,21 +4,21 @@ import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routes from './app/routes';
 import cookieParser from 'cookie-parser';
-import { CLIENT_URL } from './constants/common';
+// import { CLIENT_URL } from './constants/common';
 
 const app: Application = express();
 
-// const corsOptions: CorsOptions = {
-//   origin: 'http://localhost:3000/'  /* [CLIENT_URL, "http://localhost:3000/"] */,
-//   credentials: true,
-// };
-
 const corsOptions: CorsOptions = {
-  origin: [CLIENT_URL, 'http://localhost:3000/'],
-  methods: '*',
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: 'http://localhost:3000/',
   credentials: true,
 };
+
+// const corsOptions: CorsOptions = {
+//   origin: 'http://localhost:3000',
+//   methods: '*',
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   credentials: true,
+// };
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
