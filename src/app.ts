@@ -4,21 +4,14 @@ import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routes from './app/routes';
 import cookieParser from 'cookie-parser';
-// import { CLIENT_URL } from './constants/common';
+import { CLIENT_URL } from './constants/common';
 
 const app: Application = express();
 
 const corsOptions: CorsOptions = {
-  origin: 'https://jobsterr.vercel.app',
+  origin: CLIENT_URL,
   credentials: true,
 };
-
-// const corsOptions: CorsOptions = {
-//   origin: 'http://localhost:3000',
-//   methods: '*',
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true,
-// };
 
 app.use(cors(corsOptions));
 app.use(cookieParser());

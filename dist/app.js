@@ -9,18 +9,12 @@ const http_status_1 = __importDefault(require("http-status"));
 const globalErrorHandler_1 = __importDefault(require("./app/middlewares/globalErrorHandler"));
 const routes_1 = __importDefault(require("./app/routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-// import { CLIENT_URL } from './constants/common';
+const common_1 = require("./constants/common");
 const app = (0, express_1.default)();
 const corsOptions = {
-    origin: 'https://jobsterr.vercel.app',
+    origin: common_1.CLIENT_URL,
     credentials: true,
 };
-// const corsOptions: CorsOptions = {
-//   origin: 'http://localhost:3000',
-//   methods: '*',
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true,
-// };
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, cookie_parser_1.default)());
 //parser
