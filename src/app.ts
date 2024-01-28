@@ -1,4 +1,4 @@
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
@@ -8,8 +8,8 @@ import { CLIENT_URL } from './constants/common';
 
 const app: Application = express();
 
-const corsOptions = {
-  origin: CLIENT_URL,
+const corsOptions: CorsOptions = {
+  origin: [CLIENT_URL, "http://localhost:3000/"],
   credentials: true,
 };
 
