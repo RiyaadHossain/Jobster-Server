@@ -9,14 +9,14 @@ const http_status_1 = __importDefault(require("http-status"));
 const globalErrorHandler_1 = __importDefault(require("./app/middlewares/globalErrorHandler"));
 const routes_1 = __importDefault(require("./app/routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-// import { CLIENT_URL } from './constants/common';
+const common_1 = require("./constants/common");
 const app = (0, express_1.default)();
 // const corsOptions: CorsOptions = {
 //   origin: 'http://localhost:3000/'  /* [CLIENT_URL, "http://localhost:3000/"] */,
 //   credentials: true,
 // };
 const corsOptions = {
-    origin: '*',
+    origin: [common_1.CLIENT_URL, 'http://localhost:3000/'],
     methods: '*',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
