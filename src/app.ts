@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 const app: Application = express();
 
 const corsOptions: CorsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://jobsterr.vercel.app',
   credentials: true,
 };
 
