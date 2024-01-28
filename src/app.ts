@@ -4,12 +4,12 @@ import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routes from './app/routes';
 import cookieParser from 'cookie-parser';
-import config from './config';
+import { CLIENT_URL } from './constants/common';
 
 const app: Application = express();
 
 const corsOptions = {
-  origin: config.CLIENT_URL,
+  origin: CLIENT_URL,
   credentials: true,
 };
 

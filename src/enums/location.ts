@@ -4,7 +4,7 @@ export enum ENUM_LOCATION {
   AFRICA = 'africa',
   NORTH_AMERICA = 'north_america',
   SOUTH_AMERICA = 'south_america',
-  ANTERCTICA = 'anterctica',
+  ANTARCTICA = 'antarctica',
   EUROPE = 'europe',
   AUSTRALIA = 'australia',
 }

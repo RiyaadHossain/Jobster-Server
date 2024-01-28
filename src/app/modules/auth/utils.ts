@@ -1,14 +1,14 @@
-import config from '@/config';
 import { emailSender } from '@/helpers/emailSender';
 import path from 'path';
 import ejs from 'ejs';
+import { CLIENT_URL } from '@/constants/common';
 
 const sendResetPasswordEmail = async (
   email: string,
   token: string,
   name: string
 ) => {
-  const passwordResetURL = `${config.CLIENT_URL}/reset-password/${token}`;
+  const passwordResetURL = `${CLIENT_URL}/reset-password/${token}`;
 
   const templatePath = path.join(
     __dirname,
@@ -30,7 +30,7 @@ const sendResetPasswordEmail = async (
 };
 
 const sendConfirmResetPasswordEmail = async (email: string, name: string) => {
-  const clientURL = config.CLIENT_URL;
+  const clientURL = CLIENT_URL;
   const templatePath = path.join(
     __dirname,
     '../../../views/templates/success-reset-password.ejs'

@@ -8,7 +8,7 @@ var ENUM_WORK_LEVEL;
     ENUM_WORK_LEVEL["EXECUTIVE"] = "executive";
     ENUM_WORK_LEVEL["MANAGER"] = "manager";
     ENUM_WORK_LEVEL["MID_LEVEL"] = "mid_level";
-    ENUM_WORK_LEVEL["NO_EXPERIENCE"] = "no_experience";
+    ENUM_WORK_LEVEL["FRESHER"] = "fresher";
     ENUM_WORK_LEVEL["SENIOR_LEVEL"] = "senior_level";
 })(ENUM_WORK_LEVEL = exports.ENUM_WORK_LEVEL || (exports.ENUM_WORK_LEVEL = {}));
 var ENUM_EMPLOYMENT_TYPE;

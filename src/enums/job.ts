@@ -4,7 +4,7 @@ export enum ENUM_WORK_LEVEL {
   EXECUTIVE = 'executive',
   MANAGER = 'manager',
   MID_LEVEL = 'mid_level',
-  NO_EXPERIENCE = 'no_experience',
+  FRESHER = 'fresher',
   SENIOR_LEVEL = 'senior_level',
 }
 
