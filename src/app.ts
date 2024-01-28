@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 const app: Application = express();
 
 const corsOptions: CorsOptions = {
-  origin: 'http://localhost:3000/' /* [CLIENT_URL, "http://localhost:3000/"] */,
+  origin: 'http://localhost:3000/'  /* [CLIENT_URL, "http://localhost:3000/"] */,
   credentials: true,
 };
 
