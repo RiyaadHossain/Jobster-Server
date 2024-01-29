@@ -9,10 +9,10 @@ const http_status_1 = __importDefault(require("http-status"));
 const globalErrorHandler_1 = __importDefault(require("./app/middlewares/globalErrorHandler"));
 const routes_1 = __importDefault(require("./app/routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const common_1 = require("./constants/common");
+const config_1 = __importDefault(require("./config"));
 const app = (0, express_1.default)();
 const corsOptions = {
-    origin: common_1.CLIENT_URL,
+    origin: config_1.default.CLIENT_URL,
     credentials: true,
 };
 app.use((0, cors_1.default)(corsOptions));

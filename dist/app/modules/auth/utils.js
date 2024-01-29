@@ -16,9 +16,9 @@ exports.AuthUtils = void 0;
 const emailSender_1 = require("../../../helpers/emailSender");
 const path_1 = __importDefault(require("path"));
 const ejs_1 = __importDefault(require("ejs"));
-const common_1 = require("../../../constants/common");
+const config_1 = __importDefault(require("../../../config"));
 const sendResetPasswordEmail = (email, token, name) => __awaiter(void 0, void 0, void 0, function* () {
-    const passwordResetURL = `${common_1.CLIENT_URL}/reset-password/${token}`;
+    const passwordResetURL = `${config_1.default.CLIENT_URL}/reset-password/${token}`;
     const templatePath = path_1.default.join(__dirname, '../../../views/templates/reset-password.ejs');
     const emailBody = yield ejs_1.default.renderFile(templatePath, {
         name,
@@ -33,7 +33,7 @@ const sendResetPasswordEmail = (email, token, name) => __awaiter(void 0, void 0,
     yield (0, emailSender_1.emailSender)(mailInfo);
 });
 const sendConfirmResetPasswordEmail = (email, name) => __awaiter(void 0, void 0, void 0, function* () {
-    const clientURL = common_1.CLIENT_URL;
+    const clientURL = config_1.default.CLIENT_URL;
     const templatePath = path_1.default.join(__dirname, '../../../views/templates/success-reset-password.ejs');
     const emailBody = yield ejs_1.default.renderFile(templatePath, {
         name,
