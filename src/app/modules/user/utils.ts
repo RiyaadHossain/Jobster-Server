@@ -4,6 +4,7 @@ import { emailSender } from '@/helpers/emailSender';
 import ejs from 'ejs';
 import path from 'path';
 import { IConfirmAccountMail } from './interface';
+import config from '@/config';
 
 const getLastUserId = async (role: ENUM_USER_ROLE) => {
   const user = await User.findOne({ role }).sort({ createdAt: -1 });
@@ -48,9 +49,8 @@ const sendConfirmationEmail = async ({
   email,
   token,
   name,
-  URL,
 }: IConfirmAccountMail) => {
-  const confirmationURL = `${URL}/confirm-account/${name}/${token}`;
+  const confirmationURL = `${config.CLIENT_URL}/confirm-account/${name}/${token}`;
 
   const templatePath = path.join(
     __dirname,

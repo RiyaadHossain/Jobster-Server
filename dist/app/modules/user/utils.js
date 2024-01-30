@@ -18,6 +18,7 @@ const model_1 = __importDefault(require("./model"));
 const emailSender_1 = require("../../../helpers/emailSender");
 const ejs_1 = __importDefault(require("ejs"));
 const path_1 = __importDefault(require("path"));
+const config_1 = __importDefault(require("../../../config"));
 const getLastUserId = (role) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield model_1.default.findOne({ role }).sort({ createdAt: -1 });
     return user === null || user === void 0 ? void 0 : user.id.substr(3);
@@ -48,8 +49,8 @@ const validateImageField = (userRole, filedName) => {
     }
     return { isValid, error };
 };
-const sendConfirmationEmail = ({ email, token, name, URL, }) => __awaiter(void 0, void 0, void 0, function* () {
-    const confirmationURL = `${URL}/confirm-account/${name}/${token}`;
+const sendConfirmationEmail = ({ email, token, name, }) => __awaiter(void 0, void 0, void 0, function* () {
+    const confirmationURL = `${config_1.default.CLIENT_URL}/confirm-account/${name}/${token}`;
     const templatePath = path_1.default.join(__dirname, '../../../views/templates/confirm-email.ejs');
     const emailContent = yield ejs_1.default.renderFile(templatePath, {
         name,

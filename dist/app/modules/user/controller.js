@@ -30,8 +30,7 @@ const me = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, voi
 const signUp = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.body.user;
     const name = req.body.name;
-    const URL = req.protocol + '://' + req.get('host') + req.baseUrl;
-    const result = yield service_1.UserServices.signUp(user, name, URL);
+    const result = yield service_1.UserServices.signUp(user, name);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

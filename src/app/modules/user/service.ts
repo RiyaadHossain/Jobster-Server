@@ -28,7 +28,7 @@ const me = async (id: string) => {
   return user;
 };
 
-const signUp = async (payload: IUser, name: string, URL: string) => {
+const signUp = async (payload: IUser, name: string) => {
   // 1. Is user exist
   const isExist = await User.findOne({
     email: payload.email,
@@ -52,7 +52,7 @@ const signUp = async (payload: IUser, name: string, URL: string) => {
   // 4. Send Confirmation Email to User
   const email = user.email;
   const token = user.generateToken();
-  await UserUtils.sendConfirmationEmail({ email, token, name, URL });
+  await UserUtils.sendConfirmationEmail({ email, token, name });
 
   // 5. Finally Save user doc
   await user.save();
@@ -63,11 +63,11 @@ const confirmAccount = async (name: string, token: string) => {
   const user = await User.findOne({ confirmationToken: token }).select(
     '+confirmationToken +confirmationTokenExpires'
   );
-  if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'Invalid Token');
+  if (!user) throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Token');
 
   // 2. Check Token Expire Date
   const expired = new Date() > (user.confirmationTokenExpires as Date);
-  if (expired) throw new ApiError(httpStatus.NOT_FOUND, 'User Token Expired!');
+  if (expired) throw new ApiError(httpStatus.BAD_REQUEST, 'User Token Expired!');
 
   // 3. Create Candidate/Company account
   const userInfo = { id: user.id, name };

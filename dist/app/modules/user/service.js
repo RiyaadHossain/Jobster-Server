@@ -34,7 +34,7 @@ const me = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'User account is inactive');
     return user;
 });
-const signUp = (payload, name, URL) => __awaiter(void 0, void 0, void 0, function* () {
+const signUp = (payload, name) => __awaiter(void 0, void 0, void 0, function* () {
     // 1. Is user exist
     const isExist = yield model_3.default.findOne({
         email: payload.email,
@@ -53,7 +53,7 @@ const signUp = (payload, name, URL) => __awaiter(void 0, void 0, void 0, functio
     // 4. Send Confirmation Email to User
     const email = user.email;
     const token = user.generateToken();
-    yield utils_1.UserUtils.sendConfirmationEmail({ email, token, name, URL });
+    yield utils_1.UserUtils.sendConfirmationEmail({ email, token, name });
     // 5. Finally Save user doc
     yield user.save();
 });
@@ -61,11 +61,11 @@ const confirmAccount = (name, token) => __awaiter(void 0, void 0, void 0, functi
     // 1. Check user existence
     const user = yield model_3.default.findOne({ confirmationToken: token }).select('+confirmationToken +confirmationTokenExpires');
     if (!user)
-        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Invalid Token');
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Invalid Token');
     // 2. Check Token Expire Date
     const expired = new Date() > user.confirmationTokenExpires;
     if (expired)
-        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User Token Expired!');
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'User Token Expired!');
     // 3. Create Candidate/Company account
     const userInfo = { id: user.id, name };
     if (user.role === user_1.ENUM_USER_ROLE.CANDIDATE) {

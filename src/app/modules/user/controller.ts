@@ -20,8 +20,7 @@ const me: RequestHandler = catchAsync(async (req, res) => {
 const signUp: RequestHandler = catchAsync(async (req, res) => {
   const user = req.body.user;
   const name = req.body.name;
-  const URL = req.protocol + '://' + req.get('host') + req.baseUrl;
-  const result = await UserServices.signUp(user, name, URL);
+  const result = await UserServices.signUp(user, name);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -84,7 +84,6 @@ const editProfile = (userId, payload) => __awaiter(void 0, void 0, void 0, funct
         new: true,
         runValidators: true,
     });
-    console.log(user, updatedData);
     return updatedData;
 });
 const uploadResume = (userId, file) => __awaiter(void 0, void 0, void 0, function* () {

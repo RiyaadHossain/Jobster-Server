@@ -42,5 +42,4 @@ export type IConfirmAccountMail = {
   email: string;
   token: string;
   name: string;
-  URL: string;
 };

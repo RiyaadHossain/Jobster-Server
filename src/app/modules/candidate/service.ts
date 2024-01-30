@@ -91,7 +91,7 @@ const editProfile = async (userId: string, payload: ICandidate) => {
       runValidators: true,
     }
   );
-  console.log(user,updatedData);
+
   return updatedData;
 };
 
