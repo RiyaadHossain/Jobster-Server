@@ -1,69 +1,80 @@
-# University Management Core Service
-This guide will walk you through the process of setting up the University Management Core Service Starter project. By following these steps, you will clone the project, install dependencies, and configure Prisma for database management. Let's get started!
+# Jobster 💼
+
+## Overview
+
+Jobster - a platform which brings together companies and candidates in one place. Companies can easily post jobs, review applications, and manage candidate interactions, while candidates can apply jobs, track applications. User-friendly dashboards for both company and candidate users provide easy profile management, analytics, and instant notifications, making the entire recruitment experience smooth and efficient.
+
+##### Live Site: https://jobsterr.vercel.app/
+
+##### Server Code: https://github.com/RiyaadHossain/Jobster-Server
+
+## Features
+
+### Authentication and Authorization
+
+- Email-based authorization ensures secure user registration and login.
+- Cookie-based authentication enhances user security and maintains session persistence.
+
+### User Roles
+
+- **Company User:**
+
+  - Register and log in as a company.
+  - Post job openings with detailed job descriptions.
+  - Access a dashboard displaying a list of posted jobs and the corresponding list of candidates who applied.
+
+- **Candidate User:**
+  - Register and log in as a candidate.
+  - Apply for available jobs through a user-friendly interface.
+  - Access a dashboard displaying a list of applications and favorite jobs.
+
+### Dashboards
+
+- **Company Dashboard:**
+
+  - Create, update, and Update job status.
+  - Monitor the list of posted jobs and applicants.
+  - Review and manage applications received from candidates.
+  - View applications, accept or reject candidates, and manage the hiring process.
+  - Edit company profile and track profile views, application counts, and notifications.
+
+- **Candidate Dashboard:**
+  - View applications and favorite jobs.
+  - Review the status of previous job applications.
+  - Edit candidate profile and monitor profile views, application counts, and notifications.
+
+## Technologies Used
+
+> Frontend: React, TailwindCSS, React Router Dom, React Hook Form
+
+> Backend: Node, Express.js
+
+> Database: MongoDB, Mongoose
+
+> Authentication: Jwt, Bcrypt
+
+> Tools: Nodemailer, EJS, Cloudinary
 
 
-## Installation Steps
-### Follow these steps to clone and set up starter project:
+## Installation
 
-1. `Clone the project:` Open your terminal or command prompt and run the following command to clone the project repository:
+To run this project locally, follow these steps:
 
-```bash
-git clone https://github.com/Programming-Hero-Next-Level-Development/university-management-core-service-starter.git university-management-core-service
-```
+1. Clone the repository: `git clone https://github.com/RiyaadHossain/Jobster`
+2. Install dependencies: `npm install` or `yarn install`
+3. Set up the database and configure the backend.
+4. Run the application: `npm start` or `yarn start`
 
-2. `Navigate into the project directory:` Use the cd command to navigate into the project directory:
+## Future Enhancements
 
-```bash
-cd university-management-core-service
-```
+- Implement additional features such as real-time notifications and chat functionality.
+- Enhance the user interface for a more intuitive experience.
+- Expand the platform to support multiple languages and regions.
 
-3. `Install project dependencies:` Next, install the project dependencies by running the following command:
+## Contributing
 
-```bash
-yarn install
-```
+Contributions are welcome! Feel free to open issues or submit pull requests.
 
-4. Configure Prisma and the database connection:
+## License
 
-- Add Prisma as a development dependency by running the following command:
-```bash
-yarn add prisma --save-dev
-```
-
-- Set up your Prisma project by creating the Prisma schema file using the following command:
-```bash
-npx prisma init
-```
-
-- Open the prisma/schema.prisma file and configure your database connection details.
-
-```bash
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-- Create a .env file in the project root directory and set the DATABASE_URL environment variable. Replace the placeholders with your database connection details:
-```bash
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=SCHEMA"
-```
-
-5. Creating the database schema
-6. Migrate the database schema: Use the following command to create and apply the initial database schema:
-
-```bash
-npx prisma migrate dev --name init
-```
-This command creates a new migration file based on your schema changes and applies it to your database.
-
-6. `Install Prisma Client:` Install the Prisma Client library by running the following command:
-```bash
-yarn add @prisma/client
-```
-
-This command installs the Prisma Client, which provides an interface to interact with your database.
-
-That's it! You have successfully set up the University Management Core Service Starter project. You can now start exploring and working with the codebase. Refer to the project documentation or README for further instructions on how to run and use the core service.
-
-Happy coding!
+This project is licensed under the LicenseName - see the [LICENSE.md](LICENSE.md) file for details.
