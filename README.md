@@ -1,6 +1,11 @@
-# Jobster 💼
+![alt text](/screenshots/jobster-home.png)
 
-## Overview
+<!-- <p align="center">
+  <img src="screenshots/jobster-jobs.png" alt="Image 1" style="object-fit: cover; width: 400px; height: 300px;"/>
+  <img src="screenshots/jobster-dashboard.png" alt="Image 2" style="object-fit: cover; width: 400px; height: 300px;"/>
+</p> -->
+
+# Jobster 💼
 
 Jobster - a platform which brings together companies and candidates in one place. Companies can easily post jobs, review applications, and manage candidate interactions, while candidates can apply jobs, track applications. User-friendly dashboards for both company and candidate users provide easy profile management, analytics, and instant notifications, making the entire recruitment experience smooth and efficient.
 
@@ -51,10 +56,9 @@ Jobster - a platform which brings together companies and candidates in one place
 
 > Database: MongoDB, Mongoose
 
-> Authentication: Jwt, Bcrypt
+> Authentication: Jwt, Bcrypt, Cookie
 
-> Tools: Nodemailer, EJS, Cloudinary
-
+> Tools: Multer, Nodemailer, EJS, Cloudinary
 
 ## Installation
 
